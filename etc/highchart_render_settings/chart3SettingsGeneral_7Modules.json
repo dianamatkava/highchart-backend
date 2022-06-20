@@ -1,0 +1,122 @@
+{   
+   chart: {
+        type: 'column',
+        "events":{
+        	"load": function() {
+				var plotBands = this.xAxis[0].plotLinesAndBands;
+				for (var i in plotBands) {
+					var d = plotBands[i].svgElem.d;
+					var dArray = d.split(' ');
+					var rect = {x: dArray[1], y: dArray[5], width: 146, height: 85};
+					if (i % 2 != 0) {
+					  this.renderer.rect(rect.x, rect.y, rect.width, rect.height).attr({fill: '#FFF8E4'}).add();
+					}
+				}
+    	    }
+      	}
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+        categories: [ {
+        	name: "Self-<br/>Awareness",
+          categories: ["Pre", "Post"]
+        }, {
+        	name: "Communication",
+          categories: ["Pre", "Post"]
+        }, {
+        	name: "Time<br/>Management",
+          categories: ["Pre", "Post"]
+        }, {
+        	name: "How to Sell",
+          categories: ["Pre", "Post"]
+        }, {
+        	name: "How to Say<br/>No",
+          categories: ["Pre", "Post"]
+        }, {
+        	name: "Effective<br/>Meetings",
+          categories: ["Pre", "Post"]
+        }, {
+        	name: "Critical<br/>Thinking",
+          categories: ["Pre", "Post"]
+        }],
+        labels: {
+			rotation: 0,
+			style: {
+				fontFamily: 'Arial',
+          		color: '#787878',
+				fontSize: '16px',
+				textOverflow: 'none'
+			}
+        },
+    	lineWidth: 0,
+        "plotBands":[{"color":"#ffffff","from":-0.5,"to":1.5},{"color":"#FFF8E4","from":1.5,"to":3.5},{"color":"#ffffff","from":3.5,"to":5.5},{"color":"#FFF8E4","from":5.5,"to":7.5},{"color":"#ffffff","from":7.5,"to":9.5},{"color":"#FFF8E4","from":9.5,"to":11.5},{"color":"#ffffff","from":11.5,"to":13.5}]
+    },
+    yAxis: {
+        min: 0,
+        max: 5,
+        title: {
+            text: ''
+        },
+        labels: {
+			style: {
+				fontFamily: 'Arial',
+				color: '#787878',
+				fontSize: '16px',
+				textOverflow: 'none'
+			}
+        },
+        allowDecimals: false,
+        gridLineColor: '#e7e6e6'
+    },
+    credits: false,
+    plotOptions: {
+		series: {
+			stacking: 'normal',
+			borderWidth: 0
+        }
+    },
+    legend: {
+        symbolHeight: 16,
+        symbolWidth: 16,
+		itemStyle: {
+			fontFamily: 'Arial', 
+			fontSize: '16px',
+			color: '#787878',
+			fontWeight: 'asd'
+        },
+		reversed: true
+    },
+    series: [
+    	{
+      	type: 'column',
+      	name: 'Gap to Goal',
+        data: [GAP_TO_GOAL_DATA],
+        color: '#edc17c'
+      }, {
+      	type: 'column',
+      	name: 'Increase in Self Rating',
+        data: [INCREASE_IN_SELF_RATING_DATA],
+        color: '#00b050'
+      }, {
+      	type: 'column',
+      	name: 'Drop in Self Rating',
+        data: [DROP_IN_SELF_RATING_DATA],
+        color: '#92d050'
+      }, {
+    		id: '1',
+        type: 'column',
+        name: 'Current Rating',
+        data: [CURRENT_RATING_DATA],
+        color: '#cccccc'
+		}
+	],
+	exporting: {
+   		sourceWidth: 1060,
+		sourceHeight: 720,
+		scale: 1,
+		enabled: false
+	}
+}
+

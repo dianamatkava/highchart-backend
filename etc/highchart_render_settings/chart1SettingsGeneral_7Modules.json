@@ -1,0 +1,115 @@
+{
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+			categories: ["Self-<br>Awareness", "Communication", "Time<br>Management", "How to Sell", "How to Say<br>No", "Effective<br>Meetings", "Critical<br>Thinking"],
+    		labels: {
+       		style: {
+        		fontFamily: 'Arial',
+          		color: '#787878',
+          		fontSize: '24px',
+          		textOverflow: 'none'
+        	}
+      	},
+		tickWidth: 0,
+    	lineWidth: 0
+    },
+    yAxis: {
+        min: 0,
+        max: 100,
+        title: {
+            text: 'Percent (%)',
+            style: {
+				fontFamily: 'Arial',
+				fontSize: '24px',
+				color: '#787878'
+			}
+        },
+        labels: {
+			style: {
+				fontFamily: 'Arial',
+				fontSize: '24px',
+				color: '#787878'
+			}
+        },
+		tickWidth: 0,
+        gridLineColor: '#e7e6e6'
+    },
+    credits: false,
+    plotOptions: {
+		series: {
+			grouping: false,
+			lineWidth: 4,
+			marker: {
+				radius: 7
+			}
+        },
+        column: {
+            zones: [{
+                value: 39,
+                color: '#f08c4a'
+            },{
+				value: 75,
+                color: '#92d050'
+            }, {
+                color: '#00b050'
+            }],
+            dataLabels: {
+                enabled: true,
+                inside: true,
+                verticalAlign:'bottom',
+                style: {
+					fontFamily: 'Arial',
+					fontSize: '24px',
+                    textOutline: false,
+                    color: 'black',
+                    fontWeight: 'notBold'
+                },
+                formatter:function() {
+                    return this.y + '%';
+                }
+            }
+        }
+    },
+    legend: {
+        symbolHeight: 24,
+        symbolWidth: 24,
+		itemStyle: {
+			fontFamily: 'Arial', 
+			fontSize: '28px',
+			color: '#787878',
+			fontWeight: 'asd'
+        }
+    },
+    series: [{
+        type: 'column',
+        name: 'Above 75%',
+        data: [DATA_TRAINEE],
+        color: '#00b050'
+      }, {
+        type: 'column',
+        name: 'Above 40%',
+        data: [0, 0, 0, 0, 0, 0, 0],
+        color: '#92d050'
+      }, {
+      	type: 'column',
+      	name: 'Below 40%',
+        color: '#f08c4a'
+      }, {
+      	type: 'spline',
+        name: 'Cohort Average',
+        data: [DATA_COHORT],
+        color: '#cccccc'
+      }
+   ],
+   exporting: {
+		sourceWidth: 1430,
+		sourceHeight: 880,
+		scale: 1,
+		enabled: false
+   }
+}

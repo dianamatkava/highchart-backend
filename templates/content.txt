@@ -1,0 +1,10 @@
+You achieved a {{cert}} and can now start thinking about how to strengthen your 
+skills for even {{score_heights}} performance. Overall, your results are commendable, 
+with your average GBS score {{score}}% above the Cohort Average. Your best scores were 
+{{user_top_module_1}} and {{user_top_module_2}}. {{user_low_module_1}} and {{user_low_module_1}}
+are areas where further focus is needed. We hope you use this feedback as an opportunity 
+to continue investing in yourself and achieve even greater success professionally
+
+
+#template name
+#product

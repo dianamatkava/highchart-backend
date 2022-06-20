@@ -1,0 +1,138 @@
+{
+    chart: {
+        type: 'bar',
+		"events":{
+			"load": function() {
+				var plotBands = this.xAxis[0].plotLinesAndBands;
+				for (var i in plotBands) {
+					var d = plotBands[i].svgElem.d;
+					var dArray = d.split(' ');
+					var rect = {x: 25, y: dArray[5], width: 700, height: 105};
+					if (i % 2 != 0) {
+						this.renderer.rect(rect.x, rect.y, rect.width, rect.height).attr({fill: '#FFF8E4'}).add();
+					}
+				}
+			}
+		}
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+        categories: [ {
+        	name: "<b>Self-Awareness</b>",
+          categories: ["Why self-awareness is critical to<br/>every professional", "How to be more self-aware", "Why a global awareness is so important"]
+        }, {
+        	name: "<b>Communication</b>",
+          categories: ["What is communication, why it's important", "How to communicate", "Effective written communcation"]
+        }, {
+        	name: "<b>Time</b><br/><b>Management</b>",
+          categories: ["Awareness of time management, why it's necessary", "Understanding prioritization", "How to manage interruptions"]
+        }, {
+        	name: "<b>How to Sell</b>",
+          categories: ["What is sales and how to sell", "The sales process, and why all team<br/>members need to understand it", "How to close sales and deal with objections"]
+        }, {
+        	name: "<b>How to say no</b>",
+          categories: ["Why it's important to be able to say no", "How to say no", "What saying no means for a professional"]
+        }, {
+        	name: "<b>Effective</b><br/><b>Meetings</b>",
+          categories: ["Why meetings go wrong", "Rules of engagement during meetings", "How to prepare for a meeting and<br/>follow-up after one"]
+        }, {
+        	name: "<b>Critical Thinking</b>",
+          categories: ["Why critical thinking is important", "How to apply critical thinking", "Situational awareness and applying<br/>critical thinking in real time"]
+        }, {
+        	name: "<b>Planning &</b><br/><b>Agility</b>",
+          categories: ["Why planning and agility are important", "Understanding plans are nothing,<br/>planning is everything & how to plan", "How to implement agility in an organization"]
+        }, {
+        	name: "<b>Professionalism</b>",
+          categories: ["What is professionalism", "Understanding and applying attention<br/>to detail and ownership", "Understanding and applying initiative"]
+        }, {
+        	name: "<b>Collaboration &</b><br/><b>Teamwork</b>",
+          categories: ["What is collaboration and teamwork<br/>& what makes a good team player", "How to be a collaborative team member", "Understanding affinity bias and<br/>the importance of inclusion"]
+        }], 
+        labels: {
+        	rotation: 0,
+			style: {
+				fontFamily: 'Arial',
+				fontSize: '14px',
+				overflow: 'justify',
+				textOverflow: 'none'
+			}
+        },
+        "plotBands":[{"color":"#ffffff","from":-1,"to":2.5},{"color":"#FFF8E4","from":2.5,"to":5.5},{"color":"#ffffff","from":5.5,"to":8.5},{"color":"#FFF8E4","from":8.5,"to":11.5},{"color":"#ffffff","from":11.5,"to":14.5},{"color":"#FFF8E4","from":14.5,"to":17.5},{"color":"#ffffff","from":17.5,"to":20.5}, {"color":"#FFF8E4","from":20.5,"to":23.5},{"color":"#ffffff","from":23.5,"to":26.5}, {"color":"#FFF8E4","from":26.5,"to":29.5}]
+    },
+    yAxis: {
+        min: 0,
+        max: 100,
+        title: {
+            text: 'Percent (%)',
+            style: {
+				fontFamily: 'Arial',
+          		fontSize: '14px'
+          	}
+        },
+        labels: {
+			style: {
+				fontFamily: 'Arial',
+          		fontSize: '14px'
+			}
+        }
+    },
+    credits: false,
+    plotOptions: {
+		series: {
+            borderWidth: 0,
+			stacking: 'normal'
+		},
+        bar: {
+			zones: [{
+				value: 40,
+				color: '#f08c4a'
+			},{
+				value: 75,
+				color: '#92d050'
+			}, {
+				color: '#00b050'
+			}]
+        }
+    },
+    legend: {
+        symbolHeight: 16,
+        symbolWidth: 16,
+		itemStyle: {
+			fontFamily: 'Arial', 
+			fontSize: '16px',
+			color: '#787878',
+			fontWeight: 'asd'
+		}
+    },
+    series: [{
+        type: 'bar',
+        name: 'Above 75%',
+        data: [83, 80, 80, 100, 68, 75, 83, 78, 89, 56, 74, 57, 50, 33, 100, 100, 75, 50, 50, 83, 52, 100, 50, 65, 75, 72, 60, 100, 92, 67],
+        color: '#00b050'
+      }, {
+    		id: '1',
+        type: 'bar',
+        name: 'Above 40%',
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+		color: '#92d050'
+      }, {
+      	type: 'column',
+      	idOfLinkedSeries: '1',
+      	name: 'Below 40%',
+		color: '#f08c4a'
+      }, {
+      	type: 'spline',
+        name: 'Cohort Average',
+        data: [66, 80, 78, 87, 65, 66, 75, 68, 84, 57, 67, 54, 61, 65, 76, 78, 67, 68, 44, 61, 55, 76, 57, 58, 76, 61, 58, 73, 73, 57],
+		color: '#cccccc'
+      }
+   ],
+   exporting: {
+		sourceWidth: 934,
+		sourceHeight: 1160,
+		scale: 1,
+		enabled: false
+   }
+}

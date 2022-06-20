@@ -1,0 +1,115 @@
+{
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: ''
+    },
+    xAxis: {
+			categories: ["Self-<br>Awareness", "Communication", "Time<br>Management", "How to Sell", "How to Say<br>No", "Effective<br>Meetings", "Critical<br>Thinking", "Planning<br>& Agility", "Professionalism", "Collaboration<br>& Teamwork"],
+    		labels: {
+       		style: {
+        		fontFamily: 'Arial',
+          		color: '#787878',
+          		fontSize: '20px',
+          		textOverflow: 'none'
+        	}
+      	},
+		tickWidth: 0,
+    	lineWidth: 0
+    },
+    yAxis: {
+        min: 0,
+        max: 100,
+        title: {
+            text: 'Percent (%)',
+            style: {
+				fontFamily: 'Arial',
+				fontSize: '24px',
+				color: '#787878'
+			}
+        },
+        labels: {
+			style: {
+				fontFamily: 'Arial',
+				fontSize: '24px',
+				color: '#787878'
+			}
+        },
+		tickWidth: 0,
+        gridLineColor: '#e7e6e6'
+    },
+    credits: false,
+    plotOptions: {
+		series: {
+			grouping: false,
+			lineWidth: 4,
+			marker: {
+				radius: 7
+			}
+        },
+        column: {
+            zones: [{
+                value: 40,
+                color: '#f08c4a'
+            },{
+				value: 75,
+                color: '#92d050'
+            }, {
+                color: '#00b050'
+            }],
+            dataLabels: {
+                enabled: true,
+                inside: true,
+                verticalAlign:'bottom',
+                style: {
+					fontFamily: 'Arial',
+					fontSize: '24px',
+                    textOutline: false,
+                    color: 'black',
+                    fontWeight: 'notBold'
+                },
+                formatter:function() {
+                    return this.y + '%';
+                }
+            }
+        }
+    },
+    legend: {
+        symbolHeight: 20,
+        symbolWidth: 20,
+		itemStyle: {
+			fontFamily: 'Arial', 
+			fontSize: '24px',
+			color: '#787878',
+			fontWeight: 'asd'
+        }
+    },
+    series: [{
+        type: 'column',
+        name: 'Above 75%',
+        data: [81, 76, 83, 63, 51, 75, 64, 66, 70, 83],
+        color: '#00b050'
+      }, {
+        type: 'column',
+        name: 'Above 40%',
+        data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        color: '#92d050'
+      }, {
+      	type: 'column',
+      	name: 'Below 40%',
+        color: '#f08c4a'
+      }, {
+      	type: 'spline',
+        name: 'Cohort Average',
+        data: [74, 70, 75, 59, 67, 71, 55, 62, 66, 66],
+        color: '#cccccc'
+      }
+   ],
+   exporting: {
+		sourceWidth: 1430,
+		sourceHeight: 880,
+		scale: 1,
+		enabled: false
+   }
+}
