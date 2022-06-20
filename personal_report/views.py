@@ -75,27 +75,27 @@ def python_docs(request):
                 file_names[chart_settings] = upload_to
         print(file_names)
                 
-        # cmd = f'cmd /c c: && .\highcharts-export-server --infile {file_names["settings_files"]} --outfile .\\etc/temp\\chart_images\\{LEARNER}-{chart}.png'
-        # callback = f'--callback {file_names["callback_files"]}'
-        # run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
+        cmd = f'cmd /c c: && .\highcharts-export-server --infile {file_names["settings_files"]} --outfile .\\etc/temp\\chart_images\\{LEARNER}-{chart}.png'
+        callback = f'--callback {file_names["callback_files"]}'
+        run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
              
-    # if run_cmd:
-    #     doc = DocxTemplate('media\\docx\\Personal Rep`ort Template - NEW FORMAT - 10M.docx')
+    if run_cmd:
+        doc = DocxTemplate('media\\docx\\Personal Rep`ort Template - NEW FORMAT - 10M.docx')
         
-    #     context = { 
-    #             'TRAINEE': "Diana",
-    #             'CLIENT_COHORT': 'ZZL Cohort 1',
-    #             'Product': 'Global Business Skills',
-    #             'DATE': 'today',
-    #             'SCORE': "100%",
-    #             'CERT': "Excellent",
-    #             'DESCRIPTION1': "Some custom description 1",
-    #             'DESCRIPTION2': "Some custom description 2"
-    #             }
-    #     doc.render(context)
-    #     for image in product['image_to_replace']:
-    #         doc.replace_pic(product['image_to_replace'][image], f'.\etc\\temp\chart_images\{LEARNER}-{image}.png')
-    #     doc.save('media\\docx\\example.docx')
+        context = { 
+                'TRAINEE': "Diana",
+                'CLIENT_COHORT': 'ZZL Cohort 1',
+                'Product': 'Global Business Skills',
+                'DATE': 'today',
+                'SCORE': "100%",
+                'CERT': "Excellent",
+                'DESCRIPTION1': "Some custom description 1",
+                'DESCRIPTION2': "Some custom description 2"
+                }
+        doc.render(context)
+        for image in product['image_to_replace']:
+            doc.replace_pic(product['image_to_replace'][image], f'.\etc\\temp\chart_images\{LEARNER}-{image}.png')
+        doc.save('media\\docx\\example.docx')
 
     # return HttpResponse()
 
