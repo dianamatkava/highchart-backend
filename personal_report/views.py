@@ -80,7 +80,7 @@ def python_docs(request):
         run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
              
     if run_cmd:
-        doc = DocxTemplate('media\\docx\\Personal Rep`ort Template - NEW FORMAT - 10M.docx')
+        doc = DocxTemplate('media\\docx\\Personal Report Template - NEW FORMAT - 10M.docx')
         
         context = { 
                 'TRAINEE': "Diana",
