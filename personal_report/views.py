@@ -1,12 +1,15 @@
+from multiprocessing import context
 import os
 import re
 import time
 from functools import wraps
 from django.conf import settings
+from django.shortcuts import render
+from django.http import HttpResponse
 from docxtpl import DocxTemplate
 
 from etc.config.gbs_config import product
-from django.http import HttpResponse
+
 
 
 def generate_path(path='', filename='',):
@@ -21,7 +24,7 @@ def execution_speed(func):
         func(request)
         end = time.time()
         print(f'execution_speed is {end-start}')
-        return HttpResponse()
+        return render(request, 'demo.html', context={'time': end-start})
     return wrapper
 
 
@@ -72,9 +75,9 @@ def python_docs(request):
                 file_names[chart_settings] = upload_to
         print(file_names)
                 
-        cmd = f'cmd /c c: && .\highcharts-export-server --infile {file_names["settings_files"]} --outfile .\\etc/temp\\chart_images\\{LEARNER}-{chart}.png'
-        callback = f'--callback {file_names["callback_files"]}'
-        run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
+        # cmd = f'cmd /c c: && .\highcharts-export-server --infile {file_names["settings_files"]} --outfile .\\etc/temp\\chart_images\\{LEARNER}-{chart}.png'
+        # callback = f'--callback {file_names["callback_files"]}'
+        # run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
              
     # if run_cmd:
     #     doc = DocxTemplate('media\\docx\\Personal Rep`ort Template - NEW FORMAT - 10M.docx')
@@ -94,7 +97,7 @@ def python_docs(request):
     #         doc.replace_pic(product['image_to_replace'][image], f'.\etc\\temp\chart_images\{LEARNER}-{image}.png')
     #     doc.save('media\\docx\\example.docx')
 
-    return HttpResponse()
+    # return HttpResponse()
 
 
 
