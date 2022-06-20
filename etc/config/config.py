@@ -4,7 +4,7 @@ product = {
     'charts': {
         'chart1': {
             'settings_files': {
-                'template_path': 'etc\highchart_render_settings',
+                'template_path': 'etc/highchart_render_settings',
                 'template_name': 'chart1SettingsGeneral.json',
                 'data': get_data_chart
             },
@@ -17,12 +17,12 @@ product = {
         
         'chart2': {
             'settings_files': {
-                'template_path': 'etc\highchart_render_settings',
+                'template_path': 'etc/highchart_render_settings',
                 'template_name': 'chart2SettingsGeneral.json',
                 'data': get_data_chart
             },
             'callback_files': {
-                'template_path': 'etc\highchart_callback_settings',
+                'template_path': 'etc/highchart_callback_settings',
                 'template_name': 'grouped-categories.js',
                 'data': None
             },
@@ -30,12 +30,12 @@ product = {
         
         'chart3': {
             'settings_files': {
-                'template_path': 'etc\highchart_render_settings',
+                'template_path': 'etc/highchart_render_settings',
                 'template_name': 'chart3SettingsGeneral.json',
                 'data': get_data_chart3
             },
             'callback_files': {
-                'template_path': 'etc\highchart_callback_settings',
+                'template_path': 'etc/highchart_callback_settings',
                 'template_name': 'grouped-categories.js',
                 'data': None
             },
@@ -43,12 +43,12 @@ product = {
         
         'chart4': {
             'settings_files': {
-                'template_path': 'etc\highchart_render_settings',
+                'template_path': 'etc/highchart_render_settings',
                 'template_name': 'chart4SettingsGeneral.json',
                 'data': get_data_chart4 
             },
             'callback_files': {
-                'template_path': 'etc\highchart_callback_settings',
+                'template_path': 'etc/highchart_callback_settings',
                 'template_name': 'chart4RenderSettings.js',
                 'data': get_data_chart4
             },

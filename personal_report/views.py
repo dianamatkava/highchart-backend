@@ -2,11 +2,18 @@ import os
 import re
 import time
 from functools import wraps
+from django.conf import settings
 from docxtpl import DocxTemplate
-from etc.config.config import product
+
+from etc.config.gbs_config import product
 from django.http import HttpResponse
 
 
+def generate_path(path='', filename='',):
+    if filename:
+        return os.path.join(settings.BASE_DIR, *path.split('/'), filename)
+    
+    
 def execution_speed(func):
     @wraps(func)
     def wrapper(request, *args, **kwargs):
@@ -33,24 +40,25 @@ def python_docs(request):
     # Replace values in Render Settings and Callback files and create new settings files for each learner
     regex = re.compile(r'\[([A-Z_]+)\]')
     file_names = dict()
+    temp_location = 'etc/temp/learner_chart_settings/'
     
     for chart in product['charts']:
-        for settings in product['charts'][chart]:
+        for chart_settings in product['charts'][chart]:
             
-            template_path = product['charts'][chart][settings]['template_path']
-            template_name = product['charts'][chart][settings]['template_name']
+            template_path = product['charts'][chart][chart_settings]['template_path']
+            template_name = product['charts'][chart][chart_settings]['template_name']
             
             # Defind default path to Render Settings and Callback files 
-            file_names[settings] = f'{template_path}\{template_name}' if template_name else None
-            upload_to = f'.\etc\\temp\learner_chart_settings\\{LEARNER}_{template_name}'
+            file_names[chart_settings] = f"{generate_path(template_path, '_'.join(filter(None, [template_name])))}"
+            upload_to = f"{generate_path(temp_location, '_'.join(filter(None, [LEARNER, template_name])))}"
             
             # if file has values that need to be replaced
-            if product['charts'][chart][settings]['data']:
+            if product['charts'][chart][chart_settings]['data']:
                 
                 # call function to get data. returns dict()
-                learner_data = product['charts'][chart][settings]['data'](learner_get_data[chart])
+                learner_data = product['charts'][chart][chart_settings]['data'](learner_get_data[chart])
                 
-                with open(f"{template_path}\{template_name}") as f:
+                with open(f"{file_names[chart_settings]}") as f:
                     contents = f.read()
                 
                 # Find all matching regex arguments and replace it by learner_data key value pairs
@@ -61,31 +69,32 @@ def python_docs(request):
                 with open(f"{upload_to}", 'w') as f:
                     f.write(contents) 
                     
-                file_names[settings] = upload_to
+                file_names[chart_settings] = upload_to
+        print(file_names)
                 
-        cmd = f'cmd /c c: && .\highcharts-export-server --infile {file_names["settings_files"]} --outfile .\etc\\temp\chart_images\{LEARNER}-{chart}.png'
+        cmd = f'cmd /c c: && .\highcharts-export-server --infile {file_names["settings_files"]} --outfile .\\etc/temp\\chart_images\\{LEARNER}-{chart}.png'
         callback = f'--callback {file_names["callback_files"]}'
-        run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] else '']))       
+        run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
              
-    if run_cmd:
-        doc = DocxTemplate('media\\docx\\Personal Rep`ort Template - NEW FORMAT - 10M.docx')
+    # if run_cmd:
+    #     doc = DocxTemplate('media\\docx\\Personal Rep`ort Template - NEW FORMAT - 10M.docx')
         
-        context = { 
-                'TRAINEE': "Diana",
-                'CLIENT_COHORT': 'ZZL Cohort 1',
-                'Product': 'Global Business Skills',
-                'DATE': 'today',
-                'SCORE': "100%",
-                'CERT': "Excellent",
-                'DESCRIPTION1': "Some custom description 1",
-                'DESCRIPTION2': "Some custom description 2"
-                }
-        doc.render(context)
-        for image in product['image_to_replace']:
-            doc.replace_pic(product['image_to_replace'][image], f'.\etc\\temp\chart_images\{LEARNER}-{image}.png')
-        doc.save('media\\docx\\example.docx')
+    #     context = { 
+    #             'TRAINEE': "Diana",
+    #             'CLIENT_COHORT': 'ZZL Cohort 1',
+    #             'Product': 'Global Business Skills',
+    #             'DATE': 'today',
+    #             'SCORE': "100%",
+    #             'CERT': "Excellent",
+    #             'DESCRIPTION1': "Some custom description 1",
+    #             'DESCRIPTION2': "Some custom description 2"
+    #             }
+    #     doc.render(context)
+    #     for image in product['image_to_replace']:
+    #         doc.replace_pic(product['image_to_replace'][image], f'.\etc\\temp\chart_images\{LEARNER}-{image}.png')
+    #     doc.save('media\\docx\\example.docx')
 
-        return HttpResponse()
+    return HttpResponse()
 
 
 
