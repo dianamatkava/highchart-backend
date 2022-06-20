@@ -8,7 +8,7 @@ from django.shortcuts import render
 from django.http import HttpResponse
 from docxtpl import DocxTemplate
 
-from etc.config.gbs_config import product
+from .etc.config.gbs_config import product
 
 
 
