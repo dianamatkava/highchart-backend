@@ -44,6 +44,7 @@ def python_docs(request):
     regex = re.compile(r'\[([A-Z_]+)\]')
     file_names = dict()
     temp_location = 'etc/temp/learner_chart_settings/'
+    img_location = 'etc/temp/chart_images/'
     
     for chart in product['charts']:
         for chart_settings in product['charts'][chart]:
@@ -73,9 +74,8 @@ def python_docs(request):
                     f.write(contents) 
                     
                 file_names[chart_settings] = upload_to
-        print(file_names)
                 
-        cmd = f'cmd /c c: && .\highcharts-export-server --infile {file_names["settings_files"]} --outfile .\\etc/temp\\chart_images\\{LEARNER}-{chart}.png'
+        cmd = f"cmd /c c: && highcharts-export-server --infile {file_names['settings_files']} --outfile {generate_path(img_location, '-'.join(filter(None, [LEARNER, chart])))}.png"
         callback = f'--callback {file_names["callback_files"]}'
         run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
              
