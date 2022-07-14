@@ -73,13 +73,15 @@ def generate_data(request, file=None):
                         data[key][metric_list[0][1]] = []
                         
                         if len(cell) > 2:
-                            data[key][metric_list[0][2]] = []
+                            if not pd.isna(metric_list[0][2]):
+                                data[key][metric_list[0][2]] = []
                         
                     if type(cell[1]) in [int, float]:
                         data[key]['categories'].append(cell[0])
                         data[key][metric_list[0][1]].append(round(cell[1], 2))
                         if len(cell) > 2:
-                            data[key][metric_list[0][2]].append(round(cell[2], 2))
+                            if not pd.isna(metric_list[0][2]):
+                                data[key][metric_list[0][2]].append(round(cell[2], 2))
                         
         # Convert dict<key:list> to dict<key:value> for the following tables
         # might be dynamic 
@@ -108,7 +110,7 @@ def generate_data(request, file=None):
                         data[key][i[0]] = {}
                         for form in ['PRE', 'POST']:
                             data[key][i[0]][form] = {}
-
+                            
                             data[key][i[0]][form][metric_list[0][2]] = []
                             data[key][i[0]][form][metric_list[0][3]] = []
                             data[key][i[0]][form][metric_list[0][4]] = []
@@ -124,6 +126,10 @@ def generate_data(request, file=None):
                     data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][3]] = round(pg4.values.tolist()[index*2+1][3], 2)
                     data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][4]] = round(pg4.values.tolist()[index*2+1][4], 2)
 
+                    for val in range(2, len(metric_list[0])):
+                        data[key]['Module/Stage'][cell[1]][metric_list[0][val]].append(round(cell[val], 2))
+                        data[key]['Module/Stage'][pg4.values.tolist()[index*2+1][1]][metric_list[0][val]].append(round(cell[val], 2))
+        
         
         data_obj = json.dumps(data, indent = 4) 
         print(data_obj)
