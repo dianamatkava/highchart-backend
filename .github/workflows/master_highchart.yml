@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'highchart'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_F05CADA6A7F147039313554E2CA8AF1E }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_DCC7987F74EA435D83CBFE2C789C6E0C }}
