@@ -95,7 +95,7 @@ def generate_data(request, file=None):
         
         pg4 = pd.read_excel(xls, 'pg4') 
         
-        for index, cell in enumerate(pg4.values.tolist()[0::2]):
+        for index, cell in enumerate(pg4.values.tolist()[0::2][0:-1]):
             if not pd.isna(cell[1]):
                 if cell[0] == '>>>':
                     metric_list = []
@@ -128,7 +128,7 @@ def generate_data(request, file=None):
 
                     for val in range(2, len(metric_list[0])):
                         data[key]['Module/Stage'][cell[1]][metric_list[0][val]].append(round(cell[val], 2))
-                        data[key]['Module/Stage'][pg4.values.tolist()[index*2+1][1]][metric_list[0][val]].append(round(cell[val], 2))
+                        data[key]['Module/Stage'][pg4.values.tolist()[index*2+1][1]][metric_list[0][val]].append(round(pg4.values.tolist()[index*2+1][val], 2))
         
         
         data_obj = json.dumps(data, indent = 4) 

@@ -18,15 +18,6 @@ jQuery.extend({
     }
 });
 
-// data = {'Cohort Summary': {'Learners Invited': 55, 'Learners Activated': 51, 'Learners Licensed': 30, 'Learners Completed': 37, 'Compltion rate': 84, 'Certificatoin Rate': 81}, 'Confidence Summary': {'Skills Gain': 0.46, 'Confidence Gain': 0.54}, 'Location data': {'categories': ['Singapore'], 'Learners': [37]}, 'Bu Data': {'categories': ['Business Strategy', 'Cons - HQ', 'Cyber & Forensics', 'Deals - BRS', 'Deals - CPI', 'Deals - CPT', 'Deals - FDD', 'Deals VH', 'DS - Admin', 'FCS - HR', 'FCS - L&D', 'Finance Transformation', 'Financial Crime', 'Front Office Transformation', 'Productivity', 'Tax - \
-// CTA', 'Tax - CTS', 'Tax - CTS DT', 'Tax - Deals', 'Tax - FS', 'Tax - GS'], 'Learners': [1, 1, 3, 3, 
-// 1, 1, 4, 2, 1, 1, 2, 2, 2, 2, 1, 1, 3, 2, 1, 2, 1]}, 'Expertise': {'categories': ['Customer Management', 'Finance', 'HR', 'Marketing', 'Other', 'Sales', 'Technical/Engineering'], 'Learners': [1, 16, 4, 1, 12, 1, 2], 'Customer Management': 1, 'Finance': 16, 'HR': 4, 'Marketing': 1, 'Other': 12, 'Sales': 1, 'Technical/Engineering': 2}, 'Role': {'categories': ['Individual Contributor', 'Manager/Team \
-// Lead'], 'Learners': [3, 34], 'Individual Contributor': 3, 'Manager/Team Lead': 34}, 'Gender': {'categories': ['Female', 'Male', 'Rather not say'], 'Learners': [21, 14, 2], 'Female': 21, 'Male': 14, 'Rather not say': 2}, 'Work Experience': {'categories': ['< 5 years', '15 years +', '5 - 10 Years'], 'Learners': [6, 1, 30], '< 5 years': 6, '15 years +': 1, '5 - 10 Years': 30}, 'Performance Summary': 
-// {'categories': ['Cohort Average Score'], 'Value': [80], 'nan': ['nan']}, 'Module data': {'categories': ['Self-Awareness', 'Communication', 'Time Management', 'How to Sell', 'How to Say No', 'Effective Meetings', 'Critical Thinking', 'Planning & Agility', 'Professionalism', 'Collaboration & Teamwork'], 'Cohort Average': [0.83, 0.76, 0.75, 0.69, 0.78, 0.75, 0.55, 0.68, 0.69, 0.69], 'Global Average': [0.76, 0.74, 0.78, 0.66, 0.72, 0.77, 0.58, 0.69, 0.7, 0.67]}, 'Certification Level': {'categories': ['None', 'Completion', 'Merit', 'Distinction'], 'Learners': [7, 5, 20, 5], '%': [19, 14, 54, 14]}, 'Feedback Summary': {'categories': ['Average Course Rating', 'Average Course Relevance'], 'Value': [8.23, 8.87], 'nan': ['nan', 'nan']}, 'Module Rating & Relevance': {'categories': ['Self-Awareness', 'Communication', 'Time Management', 'How to Sell', 'How to Say No', 'Effective Meetings', 'Critical Thinking', 'Planning & Agility', 'Professionalism', 'Collaboration & Teamwork'], 'Rating': [7.92, 8.22, 8.81, 
-// 8.08, 8.34, 8.24, 7.62, 8.21, 8.57, 8.47], 'Relevance': [8.72, 9.16, 9.08, 8.69, 9.09, 8.85, 8.79, 8.52, 8.96, 8.74]}, 'Gap to Goal Data': {'categories': ['Self Awareness', 'Communication', 'Time Management', 'How to Sell', 'How to Say No', 'Effective Meetings', 'Critical Thinking', 'Planning & Agility', 'Professionalism', 'Collaboration & Teamwork', 'Average'], 'Module/Stage': {'PRE': {'Current': [], 'Goal': [], 'Gap': []}, 'POST': {'Current': [], 'Goal': [], 'Gap': []}}, 'Self Awareness': {'PRE': {'Current': 3.57, 'Goal': 4.35, 'Gap': 0.78}, 'POST': {'Current': 4.11, 'Goal': 4.46, 'Gap': 0.35}}, 'Communication': {'PRE': {'Current': 3.24, 'Goal': 4.41, 'Gap': 1.16}, 'POST': {'Current': 4.05, 'Goal': 4.49, 'Gap': 0.43}}, 'Time Management': {'PRE': {'Current': 3.35, 'Goal': 4.51, 'Gap': 1.16}, 'POST': {'Current': 4.03, 'Goal': 4.49, 'Gap': 0.46}}, 'How to Sell': {'PRE': {'Current': 2.54, 
-// 'Goal': 4, 'Gap': 1.46}, 'POST': {'Current': 3.78, 'Goal': 4.38, 'Gap': 0.59}}, 'How to Say No': {'PRE': {'Current': 2.68, 'Goal': 4.22, 'Gap': 1.54}, 'POST': {'Current': 4.03, 'Goal': 4.43, 'Gap': 0.41}}, 'Effective Meetings': {'PRE': {'Current': 3.11, 'Goal': 4.38, 'Gap': 1.27}, 'POST': {'Current': 4.03, 'Goal': 4.49, 'Gap': 0.46}}, 'Critical Thinking': {'PRE': {'Current': 3.46, 'Goal': 4.38, 'Gap': 0.92}, 'POST': {'Current': 4, 'Goal': 4.49, 'Gap': 0.49}}, 'Planning & Agility': {'PRE': {'Current': 3.51, 'Goal': 4.49, 'Gap': 0.97}, 'POST': {'Current': 4.11, 'Goal': 4.51, 'Gap': 0.41}}, 'Professionalism': {'PRE': {'Current': 3.7, 'Goal': 4.54, 'Gap': 0.84}, 'POST': {'Current': 4.11, 'Goal': 4.51, 'Gap': 0.41}}, 'Collaboration & Teamwork': {'PRE': {'Current': 3.84, 'Goal': 4.59, 'Gap': 0.76}, 'POST': {'Current': 4.27, 'Goal': 4.51, 'Gap': 0.24}}, 'Average': {'PRE': {'Current': 3.51, 'Goal': 4.49, 'Gap': 0.97}, 'POST': {'Current': 4.11, 'Goal': 4.51, 'Gap': 0.41}}}}
-
-
 function generate_charts() {
 
     function generate_data_series(table_name) {
@@ -54,9 +45,10 @@ function generate_charts() {
             
         return series_data
     }
+
     function generate_remnant (table_name) {
         let array = []
-        let max = Math.max.apply(Math, data[table_name]['Learners']) + 3
+        let max = Math.max.apply(Math, data[table_name]['Learners']) * 1.2
 
         for (const num of data[table_name]['Learners']) {
             array.push(max-num)
@@ -97,7 +89,7 @@ function generate_charts() {
                 symbolPadding: 13,
                 symbolHeight: 15,
                 labelFormatter: function() {
-                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
+                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span><img src='{% media "img\\2022-07-18.png" %}'></img> <span>${Math.round(this.percentage)}</span></div>`;
                 },
                 useHTML: true,
                 itemStyle: {
@@ -371,7 +363,8 @@ function generate_charts() {
                 style: {
                     fontFamily: 'Poppins'
                 },
-                marginTop: 67
+                height: 100*data['Location data']['categories'].length
+                //marginTop: -67
                 //width: 514
             },
             credits: {
@@ -386,7 +379,7 @@ function generate_charts() {
                 }
             },
             xAxis: {
-                categories: ['Columbo', 'Kandy', 'Kotte', 'Dehiwala', 'Galle', 'Moratuwa'],
+                categories: data['Location data']['categories'],
                 lineColor: 'transparent',
                 labels: {
                     style: {
@@ -421,11 +414,11 @@ function generate_charts() {
             },
             series: [{
                 name: 'Blank',
-                data: [4, 16, 17, 18, 18, 18],
+                data: generate_remnant('Location data'),
                 enableMouseTracking: false
             }, {
                 name: 'Participants',
-                data: [16, 4, 3, 2, 2, 2],
+                data: data['Location data']['Learners'],
                 dataLabels: {
                     enabled: true,
                     style: {
@@ -446,7 +439,8 @@ function generate_charts() {
                 style: {
                     fontFamily: 'Poppins'
                 },
-                marginTop: 67
+                marginTop: 67,
+                height: 33*data['Bu Data']['categories'].length,
             },
             credits: {
                 enabled: false
@@ -470,7 +464,7 @@ function generate_charts() {
                     align: 'left',
                     x:0
                 },
-                offset: 200
+                offset: 250
             },
             legend: {
             enabled: false
@@ -490,7 +484,7 @@ function generate_charts() {
                 series: {
                     stacking: 'normal',
                     borderWidth: 0,
-                    pointWidth: 28,
+                    pointWidth: 18,
                 },
             },
             series: [{
@@ -804,7 +798,7 @@ function generate_charts() {
     
             series: [{
                 name: 'Pre-Course Gap to Goal',
-                data: [1.24, 1.24, 1.24, 0.05, 5, 0.74, 1.24, 1.24, 1.24, 1.24],
+                data: data['Gap to Goal Data']['Module/Stage']['PRE']['Gap'],
                 stack: '0',
                 color:{
                 linearGradient: {x1:0, x2:0, y1:1, y2:0},
@@ -825,13 +819,19 @@ function generate_charts() {
                 style: {
                     textOutline: 'transparent',
                     fontSize: '0px'
+                },
+                formatter () {
+                    if (this.y==0) {
+                        return '<img src="http://127.0.0.1:8000/media/img/2022-07-18.png"></img>'
+                    }
+                    return 1
                 }
             }
             
             },
             {
                 name: 'Pre-Course Current Score',
-                data: [3.7, 3.1, 2.9, 3.9, 0, 2.8, 2.9, 3.2, 3.1, 3.5],
+                data: data['Gap to Goal Data']['Module/Stage']['PRE']['Current'],
                 stack: '0',
                 color: 'transparent',
                 enableMouseTracking: false,
@@ -857,7 +857,7 @@ function generate_charts() {
         },
         {
             name: 'Post-Course Gap to Goal',
-            data: [0.55, 0.4, 0.35, 0.69, 0.55, 0.55, 0.55, 0.55, 0.45, 0.4],
+            data: data['Gap to Goal Data']['Module/Stage']['POST']['Gap'],
             stack:'1',
             color:{
                 linearGradient: {x1:0, x2:0, y1:1, y2:0},
@@ -883,7 +883,7 @@ function generate_charts() {
         },
         {
             name: 'Post-Course Current Score',
-            data: [3.8, 3.9, 4.0, 3.6, 3.7, 3.7, 3.6, 3.6, 3.65, 3.8],
+            data: data['Gap to Goal Data']['Module/Stage']['POST']['Current'],
             stack: '1',
             color: 'transparent',
             enableMouseTracking: false,
@@ -933,7 +933,7 @@ function generate_charts() {
             },
     
             xAxis: {
-                categories: ['Self Awareness', 'Communication', 'Time Management', 'How to Sell & Influence', 'How to Say No', 'Effective Meetings', 'Critical Thinking', 'Planning and Agility', 'Professionalism', 'Collaboration & Teamwork'],
+                categories: data['Module Rating & Relevance']['categories'],
                 offset: 230,
                 lineColor: 'transparent',
                 labels: {
@@ -1001,7 +1001,7 @@ function generate_charts() {
             {
                 name: 'Remainder',
                 showInLegend: false,
-                data: [1.13, 1.27, 0.96, 1.31, 1.12, 0.85, 1.35, 1, 1, 0.75],
+                data: data['Module Rating & Relevance']['Rating'].map(function (x) {return (10-x)}),
                 stack: 'moduleRating',
                 color: '#f6f6f6',
                 enableMouseTracking: false
@@ -1009,7 +1009,7 @@ function generate_charts() {
             }, {
                 name: 'Module Rating',
                 showInLegend: true,
-                data: [8.87, 8.73, 9.04, 8.69, 8.88, 9.15, 8.65, 9.00, 9.00, 9.25],
+                data: data['Module Rating & Relevance']['Rating'],
                 stack: 'moduleRating',
                 color: '#2e8b57',
                 dataLabels: {
@@ -1030,7 +1030,7 @@ function generate_charts() {
             {
                 name: 'Remainder',
                 showInLegend: false,
-                data: [1.20, 1.07, 1.04, 1.50, 1.42, 1.27, 1.50, 1.17, 0.94, 0.85],
+                data: data['Module Rating & Relevance']['Relevance'].map(function (x) {return (10-x)}),
                 stack: 'moduleRelevance',
                 color: '#f6f6f6',
                 enableMouseTracking: false
@@ -1038,7 +1038,7 @@ function generate_charts() {
             }, {
                 name: 'Module Relevance',
                 showInLegend: true,
-                data: [8.80, 8.93, 8.96, 8.50, 8.58, 8.73, 8.50, 8.83, 9.06, 9.15],
+                data: data['Module Rating & Relevance']['Relevance'],
                 stack: 'moduleRelevance',
                 color: '#3984bc',
                 dataLabels: {
