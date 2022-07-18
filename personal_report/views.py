@@ -48,7 +48,6 @@ def generate_data(request, file=None):
                 if type(cell2) in [int, float]:
                     data[key][cell1] = round(cell2, 2)
                 
-        
         # Get data from Page 2, 3 and 5
         pg2 = pd.read_excel(xls, 'pg2')  
         pg3 = pd.read_excel(xls, 'pg3')
@@ -60,7 +59,6 @@ def generate_data(request, file=None):
                 pg3.values.tolist(), 
                 pg5.values.tolist()
                 ]:
-
             for index, cell in enumerate(pg):
                     
                 if not pd.isna(cell[1]):
