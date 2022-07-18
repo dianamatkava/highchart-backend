@@ -1,333 +1,141 @@
-from multiprocessing import context
-import os
-import re
-import time
-from functools import wraps
+import json
 from django.conf import settings
+from django.http import JsonResponse
 from django.shortcuts import render
-from django.http import HttpResponse
-from docxtpl import DocxTemplate
+import os
+import pandas as pd
+from django.views.decorators.csrf import csrf_exempt
 
-from etc.config.gbs_config import product
-
-
-
-def generate_path(path='', filename='',):
-    if filename:
-        return os.path.join(settings.BASE_DIR, *path.split('/'), filename)
-    
-    
-def execution_speed(func):
-    @wraps(func)
-    def wrapper(request, *args, **kwargs):
-        start = time.time()
-        func(request)
-        end = time.time()
-        print(f'execution_speed is {end-start}')
-        return render(request, 'demo.html', context={'time': end-start})
-    return wrapper
+from django.core.files.storage import FileSystemStorage
 
 
-@execution_speed
-def python_docs(request): 
-    # # Create charts
-    
-    LEARNER = "dianaGera"
-    learner_get_data = {
-        'chart1': 10,
-        'chart2': 30,
-        'chart3': 20,
-        'chart4': 1
-    }
-    
-    # Replace values in Render Settings and Callback files and create new settings files for each learner
-    regex = re.compile(r'\[([A-Z_]+)\]')
-    file_names = dict()
-    temp_location = 'etc/temp/learner_chart_settings/'
-    img_location = 'etc/temp/chart_images/'
-    
-    for chart in product['charts']:
-        for chart_settings in product['charts'][chart]:
+def import_rpt(request):
+    if request.method == 'POST' and request.FILES['filename']:
+        file = request.FILES['filename']
+        fs = FileSystemStorage()
+        try:
+            filename = fs.save(file.name, file)
+            request.session['filename'] = filename
+        except Exception as _ex:
+            print(_ex)
+        return cohort_rpt(request)
             
-            template_path = product['charts'][chart][chart_settings]['template_path']
-            template_name = product['charts'][chart][chart_settings]['template_name']
-            
-            # Defind default path to Render Settings and Callback files 
-            file_names[chart_settings] = f"{generate_path(template_path, '_'.join(filter(None, [template_name])))}"
-            upload_to = f"{generate_path(temp_location, '_'.join(filter(None, [LEARNER, template_name])))}"
-            
-            # if file has values that need to be replaced
-            if product['charts'][chart][chart_settings]['data']:
+    return render(request, 'import_rpt.html')
+
+
+
+@csrf_exempt
+def generate_data(request, file=None):
+    
+    
+    if request.method == 'POST':
+    
+        data = dict()
+        filepath = r'media\\'
+        filename = request.session.get('filename')
+        
+        xls = pd.ExcelFile(os.path.join(settings.BASE_DIR, filepath, filename))
+        
+        # Get data from Page 1 of Cohort Report Data      
                 
-                # call function to get data. returns dict()
-                learner_data = product['charts'][chart][chart_settings]['data'](learner_get_data[chart])
+        pg1 = pd.read_excel(xls, 'pg1')
+        key = str()
+        for cell1, cell2 in pg1.values.tolist():
+            if not pd.isna(cell2):
+                if cell1 == '>>>':
+                    key = cell2
+                    data[key] = {}
+                if type(cell2) in [int, float]:
+                    data[key][cell1] = round(cell2, 2)
                 
-                with open(f"{file_names[chart_settings]}") as f:
-                    contents = f.read()
-                
-                # Find all matching regex arguments and replace it by learner_data key value pairs
-                for key in re.findall(regex, contents):
-                    value_name = re.compile(r'\[{}]'.format(key))
-                    contents = value_name.sub(str(learner_data.get(key)), contents)
-                
-                with open(f"{upload_to}", 'w') as f:
-                    f.write(contents) 
+        # Get data from Page 2, 3 and 5
+        pg2 = pd.read_excel(xls, 'pg2')  
+        pg3 = pd.read_excel(xls, 'pg3')
+        pg5 = pd.read_excel(xls, 'pg5')
+        metric_list = list()
+        
+        for pg in [
+                pg2.values.tolist(), 
+                pg3.values.tolist(), 
+                pg5.values.tolist()
+                ]:
+            for index, cell in enumerate(pg):
                     
-                file_names[chart_settings] = upload_to
+                if not pd.isna(cell[1]):
+                    if cell[0] == '>>>':
+                        metric_list = []
+                        metric_list.append([i for i in pg[index+1]])
+                        key = cell[1]
+                        data[key] = {}
+                        data[key]['categories'] = []
+                        data[key][metric_list[0][1]] = []
+                        
+                        if len(cell) > 2:
+                            if not pd.isna(metric_list[0][2]):
+                                data[key][metric_list[0][2]] = []
+                        
+                    if type(cell[1]) in [int, float]:
+                        data[key]['categories'].append(cell[0])
+                        data[key][metric_list[0][1]].append(round(cell[1], 2))
+                        if len(cell) > 2:
+                            if not pd.isna(metric_list[0][2]):
+                                data[key][metric_list[0][2]].append(round(cell[2], 2))
+                        
+        # Convert dict<key:list> to dict<key:value> for the following tables
+        # might be dynamic 
+        table_list = ['Expertise', 'Role', 'Gender', 'Work Experience']
+
+        for key in table_list:
+            for index, value in enumerate(data[key]['categories']):
+                data[key].setdefault(value, data[key]['Learners'][index])
                 
-        cmd = f"cmd /c c: && highcharts-export-server --infile {file_names['settings_files']} --outfile {generate_path(img_location, '-'.join(filter(None, [LEARNER, chart])))}.png"
-        callback = f'--callback {file_names["callback_files"]}'
-        run_cmd = os.system(' '.join([cmd, callback if file_names["callback_files"] != 'None' else '']))       
-             
-#     if run_cmd:
-#         doc = DocxTemplate('media\\docx\\Personal Report Template - NEW FORMAT - 10M.docx')
-        
-#         context = { 
-#                 'TRAINEE': "Diana",
-#                 'CLIENT_COHORT': 'ZZL Cohort 1',
-#                 'Product': 'Global Business Skills',
-#                 'DATE': 'today',
-#                 'SCORE': "100%",
-#                 'CERT': "Excellent",
-#                 'DESCRIPTION1': "Some custom description 1",
-#                 'DESCRIPTION2': "Some custom description 2"
-#                 }
-#         doc.render(context)
-#         for image in product['image_to_replace']:
-#             doc.replace_pic(product['image_to_replace'][image], f'.\etc\\temp\chart_images\{LEARNER}-{image}.png')
-#         doc.save('media\\docx\\example.docx')
-
-    # return HttpResponse()
-
-
-
-
-    # # Find images name
-    # for s in document.inline_shapes:
-    #    print (s.height.cm,s.width.cm,s._inline.graphic.graphicData.pic.nvPicPr.cNvPr.name)
-
-    # 1.7768944444444446 5.96
-    # 1.016661111111111 3.05 Picture 15
-    # 10.16 16.4846 Picture 3
-    # 20.32 16.483541666666667 Picture 2
-    # 11.43 16.4846 Picture 1
-    # 1.016 3.048 Cert - None.png
-    # 1.016 3.048 Cert - Completion.png
-    # 1.016 3.048 Cert - Merit.png
-    # 1.016 3.048 Cert - Distinction.png
-
-    # # print(chart, type(chart))       # 4058 file not found         # type <int>
-    #                                   # 0 OK
-    #                                   # 1 System cant find the path
-    #                                   # if file is invalid the server will never stop, no error
-    
         
         
+        pg4 = pd.read_excel(xls, 'pg4') 
         
-    # FIRST PAGE HEADER
-    # trainee_name = document.sections[0].first_page_header.tables[0].rows[1].cells[0].paragraphs[0].runs[0]      # TRAINEE
-    # product_name = document.sections[0].first_page_header.tables[0].rows[1].cells[1].paragraphs[0].runs[0]      # Global Business Skills
-    # client_cohort = document.sections[0].first_page_header.tables[0].rows[2].cells[0].paragraphs[0].runs[0]     # CLIENT COHORT
-    # date = document.sections[0].first_page_header.tables[0].rows[2].cells[1].paragraphs[0].runs[1]              # DATE
+        for index, cell in enumerate(pg4.values.tolist()[0::2][0:-1]):
+            if not pd.isna(cell[1]):
+                if cell[0] == '>>>':
+                    metric_list = []
+                    metric_list.append([i for i in pg4.values.tolist()[index*2+1]])
         
-    # trainee_name.text = trainee_name.text.replace("[TRAINEE]", "Diana Matkava") 
-    # product_name.text = product_name.text.replace("[Global Business Skills]", "GBS1")
-    # client_cohort.text = client_cohort.text.replace("[CLIENT COHORT]", "ZZL_Cohort 4") 
-    # date.text = date.text.replace("[DATE]", "16.06.2022")
-    
-    
-    # # # PAGE 1 TABLE
-    # score_value = document.tables[0].columns[0].cells[1].paragraphs[0].runs[0]   
-    # certificat = document.tables[0].columns[1].cells[1].paragraphs[0].runs[0]
-    # description1 = document.tables[0].columns[1].cells[3].paragraphs[0].runs[0]
-    # description2 = document.tables[0].columns[1].cells[3].paragraphs[0].runs[2]
-    # score_value.text = score_value.text.replace("[SCORE]", "100%")
-    # certificat.text = certificat.text.replace("[CERT]", "EXELLENT")
-    # description1.text = description1.text.replace('[DESCRIPTION1]', 'My custom description 1')
-    # description2.text = description2.text.replace('[DESCRIPTION2]', 'My custom description 2')
-    
-    # # find and replace images in table
-    # document.tables[0].columns[0].cells[2]._element.clear_content()
-    # document.tables[0].columns[0].cells[2].add_paragraph().add_run().add_picture('media\img\chart4.png', width=Inches(2.5), height=Inches(0.8))
-    
-    # document.tables[0].columns[1].cells[2]._element.clear_content()
-    # document.tables[0].columns[1].cells[2].add_paragraph().add_run().add_picture('media\img\certificate_criteria_distinction.png', width=Inches(1.4), height=Inches(0.5))
-    # document.tables[0].columns[1].cells[2].paragraphs[0].alignment = WD_ALIGN_PARAGRAPH.CENTER
- 
-    
- 
- 
-    # # # PARAGRAPHS
-    
-    # # # Multiple replace in loop
-    # context = {
-    #     '$cert': 'Excellent',
-    #     '$score_heights': 'higher', 
-    #     '$score': '100%',
-    #     '$user_top_module_1': 'Self Awareness',
-    #     '$user_top_module_2': 'Planning and Agility',
-    #     '$user_low_module_1': 'Something',
-    #     '$user_low_module_2': 'Something',
-    # }
-    # # document.paragraphs[1].text = reduce(lambda a, kv: a.replace(*kv), context.items(), document.paragraphs[1].text)
-   
-    # for i in document.paragraphs:
-    #     i.text = reduce(lambda a, kv: a.replace(*kv), context.items(), i.text)
+                    key = cell[1]
+                    data[key] = {}
+                    data[key]['categories'] = []
+                    
+                    
+                    for i in pg4.values.tolist()[1::2]:
+                        data[key][i[0]] = {}
+                        for form in ['PRE', 'POST']:
+                            data[key][i[0]][form] = {}
+                            
+                            data[key][i[0]][form][metric_list[0][2]] = []
+                            data[key][i[0]][form][metric_list[0][3]] = []
+                            data[key][i[0]][form][metric_list[0][4]] = []
+                    
+                if type(cell[2]) in [int, float] and cell[0] != '>>>' :
+                    data[key]['categories'].append(cell[0])
+                    
+                    data[key][cell[0]][cell[1]][metric_list[0][2]] = round(cell[2], 2)
+                    data[key][cell[0]][cell[1]][metric_list[0][3]] = round(cell[3], 2)
+                    data[key][cell[0]][cell[1]][metric_list[0][4]] = round(cell[4], 2)
+                    
+                    data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][2]] = round(pg4.values.tolist()[index*2+1][2], 2)
+                    data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][3]] = round(pg4.values.tolist()[index*2+1][3], 2)
+                    data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][4]] = round(pg4.values.tolist()[index*2+1][4], 2)
+
+                    for val in range(2, len(metric_list[0])):
+                        data[key]['Module/Stage'][cell[1]][metric_list[0][val]].append(round(cell[val], 2))
+                        data[key]['Module/Stage'][pg4.values.tolist()[index*2+1][1]][metric_list[0][val]].append(round(pg4.values.tolist()[index*2+1][val], 2))
         
-    
-    
-    # works nice if we know indexes
-    # context = {
-    #     'cert': 'Excellent',
-    #     'score_heights': 'higher', 
-    #     'score': 100,
-    #     'user_top_module_1': 'Self Awareness',
-    #     'user_top_module_2': 'Planning and Agility',
-    #     'user_low_module_1': 'Something',
-    #     'user_low_module_2': 'Something',
-    # }
-    
-    # text = render_to_string('content.txt', context)
-    # document.paragraphs[1].text = text
-
-def report(request):
-    
-# without charts
-#     url = 'http://export.highcharts.com/'
-#     headers = {
-#     "Accept": "application/json",
-#     # "Content-Type": "multipart/form-data",
-#   }
-    
-#     chart_api = {
-#         "options": {
-#             "chart": {
-#                     "type": "bar"
-#                 },
-#                 "title": {
-#                     "text": "Fruit Consumption"
-#                 },
-#                 "xAxis": {
-#                     "categories": ["Apples", "Bananas", "Oranges"]
-#                 },
-#                 "yAxis": {
-#                     "title": {
-#                         "text": "Fruit eaten"
-#                     }
-#                 },
-#                 "series": [{
-#                     "name": "Jane",
-#                     "data": [1, 0, 4]
-#                 }, {
-#                     "name": "John",
-#                     "data": [5, 7, 3]
-#                 }]
-#             },
         
-#         "filename": "test.png",
-#         "type": "image/png"
-#     #   'async': True
-#     }
-    
-#     r = requests.post(url, data=chart_api, headers=headers)
+        data_obj = json.dumps(data, indent = 4) 
+        print(data_obj)
+        del request.session['filename']
+        return JsonResponse(data_obj, safe=False)
 
-#     file = open("sample_image.png", "wb")
-#     file.write(r.content)
-#     file.close()
-    
-    
-    
-    # YES Works but has ADs
-    doc = aw.Document('csv\\new-Highcharts.html')
-    doc.save("html-to-word-output.docx")
-    
-    # doc = aw.Document()
-    # builder = aw.DocumentBuilder(doc)
-    # r = requests.get('http://127.0.0.1:4200/new-java-app', allow_redirects=True)
-    # print(r.text)
-    
-    # # urllib.request.urlretrieve("http://127.0.0.1:4200/new-java-app", "test.html")
 
-                
-    # builder.insert_html(r.text)
-    # doc.save("html-to-word-req.docx")
-    
-    
-    # import urllib.request, urllib.error, urllib.parse
 
-    # url = 'http://127.0.0.1:4200/new-java-app'
+def cohort_rpt(request):
+    return render(request, 'highchart.html')
 
-    # response = urllib.request.urlopen(url)
-    # webContent = response.read().decode('UTF-8')
-    # print(webContent[0:300])
-    
-    
-    
-    
-    
-    # from selenium import webdriver
-    # from webdriver_manager.chrome import ChromeDriverManager
-
-    # #set chromedriver.exe path
-    
-    # option = webdriver. ChromeOptions()
-    # option. add_argument('headless')
-    # driver = webdriver.Chrome(ChromeDriverManager().install(), options=option)
-    
-    # driver.get("http://127.0.0.1:4200/new-java-app")
-    # driver.implicitly_wait(3.5)
-    
-    # builder.insert_html(driver.page_source)
-    # doc.save("html-to-word-sel.docx")
-    
-    # driver.quit()
-    
-    
-    
-    
-    # from pywebcopy import save_webpage
-    # url = 'http://127.0.0.1:4200/pdf'
-    # download_folder = '.\\' 
-
-    # kwargs = {'bypass_robots': True, 'project_name': 'recognisable-name'}
-
-    # save_webpage(url, download_folder, **kwargs)
-    
-    
-    #YES creates file without charts
-    # word = win32com.client.Dispatch("Word.Application")
-    # in_file  = os.path.abspath(r'csv\\Highcharts.html')
-    
-    # in_file = requests.get('http://127.0.0.1:4200/new-java-app')
-    # in_name  = in_file.text
-    # out_file = os.path.abspath("%s123.doc" % in_name)
-    
-    # doc = word.Documents.Add(in_file)
-    # word.Selection.WholeStory()
-    # word.Selection.Copy()
-    # doc.Close()
-    
-    # doc = word.Documents.Add()
-    # word.Selection.Paste()
-    # doc.SaveAs(out_file, FileFormat=0)
-    # doc.Close()
-
-    # word.Quit()
-    
-    
-    
-    #NO decode error
-    # new_parser =
-    # HtmlToDocx()
-    # new_parser.parse_html_file('csv\Highcharts.html', 'Highcharts-out')
-    
-    
-    
-    #NO VEERY BED creates file without charts
-    # import pypandoc
-    # pypandoc.download_pandoc()
-    # output = pypandoc.convert_file('csv\Highcharts.html', 'docx', outputfile="somefile.docx", extra_args=['-RTS'])
-    # assert output == ""
-    
-    
-    return HttpResponse()
