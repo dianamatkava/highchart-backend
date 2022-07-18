@@ -126,7 +126,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, "/static/")
 STATICFILES_DIRS = (
     os.path.join(BASE_DIR, "static"),
 )
-STATICFILES_STORAGE = 'myproject.storage.S3Storage'
+STATICFILES_STORAGE = 'backend.storage.S3Storage'
 
 
 MEDIA_URL = '/media/'
