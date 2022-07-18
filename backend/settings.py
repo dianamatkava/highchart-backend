@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-iulrwlgqv0ao@ijjh+y23lit^8v&iq5+e4v1+6nlhen_3a-gnf'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['highchart.azurewebsites.net']
 
