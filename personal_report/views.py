@@ -89,7 +89,7 @@ def generate_data(request, file=None):
             for index, value in enumerate(data[key]['categories']):
                 data[key].setdefault(value, data[key]['Learners'][index])
                 
-        
+         
         
         pg4 = pd.read_excel(xls, 'pg4') 
         
