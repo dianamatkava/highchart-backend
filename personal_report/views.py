@@ -31,10 +31,10 @@ def generate_data(request, file=None):
     if request.method == 'POST':
     
         data = dict()
-        filepath = 'media/'
+        filepath = 'http://highchart.azurewebsites.net/media/'
         filename = request.session.get('filename')
         
-        xls = pd.ExcelFile(os.path.join(settings.BASE_DIR, filepath, filename))
+        xls = pd.ExcelFile(os.path.join(filepath, filename))
         
         # Get data from Page 1 of Cohort Report Data      
                 
