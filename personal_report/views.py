@@ -6,6 +6,8 @@ import os
 import pandas as pd
 from django.views.decorators.csrf import csrf_exempt
 
+import urllib.request
+
 from django.core.files.storage import FileSystemStorage
 
 
@@ -32,6 +34,8 @@ def generate_data(request, file=None):
     
         data = dict()
         filepath = 'http://highchart.azurewebsites.net/media/'
+        url = start_url.replace(" ","")
+        filepath = urllib.request.urlopen(url).read()
         filename = request.session.get('filename')
         
         xls = pd.ExcelFile(os.path.join(filepath, filename))
