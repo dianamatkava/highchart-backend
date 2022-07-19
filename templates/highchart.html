@@ -128,7 +128,7 @@ function generate_charts() {
                 symbolPadding: 13,
                 symbolHeight: 15,
                 labelFormatter: function() {
-                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span><img src='{% media "img\\2022-07-18.png" %}'></img> <span>${Math.round(this.percentage)}</span></div>`;
+                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span><span>${Math.round(this.percentage)}</span></div>`;
                 },
                 useHTML: true,
                 itemStyle: {
@@ -861,7 +861,7 @@ function generate_charts() {
                 },
                 formatter () {
                     if (this.y==0) {
-                        return '<img src="http://127.0.0.1:8000/media/img/2022-07-18.png"></img>'
+                        return ''
                     }
                     return 1
                 }
