@@ -34,7 +34,7 @@ def generate_data(request, file=None):
     
         data = dict()
         filepath = 'http://highchart.azurewebsites.net/media/'
-        url = start_url.replace(" ","")
+        url = filepath.replace(" ","")
         filepath = urllib.request.urlopen(url).read()
         filename = request.session.get('filename')
         
