@@ -31,7 +31,7 @@ def generate_data(request, file=None):
     if request.method == 'POST':
     
         data = dict()
-        filepath = r'media\\'
+        filepath = 'media/'
         filename = request.session.get('filename')
         
         xls = pd.ExcelFile(os.path.join(settings.BASE_DIR, filepath, filename))
