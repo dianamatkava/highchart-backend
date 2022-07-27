@@ -10,7 +10,7 @@ jQuery.extend({
                 result = JSON.parse(data);
             },
             error: function(data) {
-                // alert(error)
+                alert(error)
             }
         });
        return result;
@@ -128,6 +128,9 @@ function generate_charts() {
             }
             },
             plotOptions: {
+            series: {
+                slicedOffset: 0
+            },
             pie: {
                 allowPointSelect: true,
                 cursor: 'pointer',
@@ -155,6 +158,7 @@ function generate_charts() {
             type: 'pie',
             backgroundColor: '#272726',
             width: 700,
+            marginLeft: -100,
             style: {
                 fontFamily: 'Poppins'
             }
@@ -172,7 +176,7 @@ function generate_charts() {
                     style: {
                 color: '#FFFFFF',
                 fontWeight: 'bold',
-                fontSize: '20px'
+                fontSize: '22px'
             }
                 },
                 className: 'genderLegend',
@@ -181,7 +185,7 @@ function generate_charts() {
                 symbolPadding: 13,
                 symbolHeight: 15,
                 labelFormatter: function() {
-                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
+                    return `<div style="display: flex; justify-content: space-between; width: 215px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
                 },
                 useHTML: true,
                 itemStyle: {
@@ -191,9 +195,9 @@ function generate_charts() {
                 },
                 itemMarginTop: 10,
                 margin: -10,
-                x: 240,
+                x: 200,
                 floating: true,
-                y: -140
+                y: -215 + 30*(data['Gender']['categories'].length - 1)
             },
             tooltip: {
             pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -204,6 +208,9 @@ function generate_charts() {
             }
             },
             plotOptions: {
+            series: {
+                slicedOffset: 0
+            },
             pie: {
                 allowPointSelect: true,
                 cursor: 'pointer',
@@ -232,7 +239,7 @@ function generate_charts() {
             },
             backgroundColor: '#272726',
             width: 700,
-            marginLeft: -300
+            marginLeft: -300,
             },
             credits: {
                 enabled: false
@@ -247,16 +254,14 @@ function generate_charts() {
                     style: {
                 color: '#FFFFFF',
                 fontWeight: 'bold',
-                fontSize: '20px'
+                fontSize: '22px'
             }
                 },
                 className: 'roleLegend',
                 layout: 'vertical',
                 symbolRadius: 0,
-                symbolPadding: 13,
-                symbolHeight: 15,
                 labelFormatter: function() {
-                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
+                    return `<div style="display: flex; justify-content: space-between; width: 215px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
                 },
                 useHTML: true,
                 itemStyle: {
@@ -265,23 +270,17 @@ function generate_charts() {
                     fontWeight: 'thin'
                 },
                 itemMarginTop: 10,
-                margin: -10,
-                x: 82,
+                
                 floating: true,
-                y: -140
+                y: -215 + 30*(data['Role']['categories'].length - 1),
+                x: 95,
             },
-            tooltip: {
-            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-            },
-            accessibility: {
-            point: {
-                valueSuffix: '%'
-            }
-            },
+
             plotOptions: {
+            series: {
+                slicedOffset: 0
+            },
             pie: {
-                allowPointSelect: true,
-                cursor: 'pointer',
                 dataLabels: {
                 enabled: false
                 },
@@ -322,7 +321,7 @@ function generate_charts() {
                     style: {
                 color: '#FFFFFF',
                 fontWeight: 'bold',
-                fontSize: '20px'
+                fontSize: '22px'
             }
                 },
                 className: 'experienceLegend',
@@ -331,7 +330,7 @@ function generate_charts() {
                 symbolPadding: 13,
                 symbolHeight: 15,
                 labelFormatter: function() {
-                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
+                    return `<div style="display: flex; justify-content: space-between; width: 215px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
                 },
                 useHTML: true,
                 itemStyle: {
@@ -341,9 +340,9 @@ function generate_charts() {
                 },
                 itemMarginTop: 10,
                 margin: -10,
-                x: 82,
+                x: 95,
                 floating: true,
-                y: -80        },
+                y: -215 + 30*(data['Work Experience']['categories'].length - 1)        },
             tooltip: {
             pointFormat: '{data.name} ({point.percentage:.1f}%)'
             },
@@ -376,25 +375,21 @@ function generate_charts() {
         });
     })
     
-    if (data['Location data']['categories'].length == 1) {
-        h = 115
-    }
-    else {
-        h = 60*data['Location data']['categories'].length+27
-    }
+    // if (data['Location data']['categories'].length == 1) {
+    //     h = 140
+    // }
+    // else {
+    //     h = 60*data['Location data']['categories'].length + 140
+    // }
     
     document.addEventListener('DOMContentLoaded', function () {
         Highcharts.chart('container5', {
             chart: {
-                backgroundColor: 'transparent',
                 type: 'bar',
                 style: {
                     fontFamily: 'Poppins'
                 },
-                height: h,
-                marginTop: 67,
-                marginBottom: -12
-                //width: 514
+                height: 60*data['Location data']['categories'].length + 100
             },
             credits: {
                 enabled: false
@@ -430,25 +425,20 @@ function generate_charts() {
               labels: {
               enabled: false
               },
-              gridLineWidth: 0,
-              width: 400
+              gridLineWidth: 0
             },
             colors: ['#f6f6f6', '#3b844e'],
             plotOptions: {
                 series: {
                     stacking: 'normal',
                     borderWidth: 0,
-                    // groupPadding: 0.15, 
-                    // pointPadding: 0.15,
-                    maxPointWidth: 35
-                    //pointWidth: 28
+                    maxPointWidth: 32
                     
                 },
             },
             series: [{
                 name: 'Blank',
                 data: generate_remnant('Location data'),
-                enableMouseTracking: false,
                 dataLabels: {
                     enabled: true,
                     formatter: function() {
@@ -459,8 +449,7 @@ function generate_charts() {
                         color: '#282828',
                         textOutline: 0
                     },
-                    align: 'left',
-                    y: 2
+                    align: 'left'
                 }
             }, {
                 name: 'Participants',
@@ -480,7 +469,8 @@ function generate_charts() {
                     fontFamily: 'Poppins'
                 },
                 marginTop: 67,
-                height: 66*data['Bu Data']['categories'].length,
+                height: 60*data['Bu Data']['categories'].length + 100,
+                // maxHeight: 400
             },
             credits: {
                 enabled: false
@@ -499,15 +489,12 @@ function generate_charts() {
                 labels: {
                     style: {
                         color: '#4b4b4e',
-                        fontSize: '16px',
-                        marginRight: 20,
-                        width: 200,
-                        overflowWrap: 'anywhere'
+                        fontSize: '18px'
                     },
                     align: 'left',
                     x:0
                 },
-                offset: 250
+                offset: 175
             },
             legend: {
             enabled: false
@@ -519,22 +506,20 @@ function generate_charts() {
               labels: {
               enabled: false
               },
-              gridLineWidth: 0,
-              width: 400
+              gridLineWidth: 0
             },
             colors: ['#f6f6f6', '#3b844e'],
             plotOptions: {
                 series: {
                     stacking: 'normal',
                     borderWidth: 0,
-                    groupPadding: 0.15,
-                    pointPadding:0.15
+                    maxPointWidth: 32
                 },
             },
-            series: [{
+            series: [
+                {
                 name: 'Blank',
-                data: generate_remnant('Bu Data'), // data['Bu Data']['Learners'].map(function (x) {return Math.max(data['Bu Data']['Learners']) + 3 - x }),
-                enableMouseTracking: false,
+                data: generate_remnant('Bu Data'),
                 dataLabels: {
                     enabled: true,
                     formatter: function() {
@@ -545,10 +530,10 @@ function generate_charts() {
                         color: '#282828',
                         textOutline: 0
                     },
-                    align: 'left',
-                    y: 2
+                    align: 'left'
                 }
-            }, {
+            },
+             {
                 name: 'Participants',
                 data: data['Bu Data']['Learners'],
                 dataLabels: {
@@ -556,6 +541,7 @@ function generate_charts() {
                 }
             }]
         });
+    
     })
     
     
@@ -799,6 +785,7 @@ function generate_charts() {
         },
     );
     })
+
     
     document.addEventListener('DOMContentLoaded', function () {
         Highcharts.chart('container9', {
@@ -829,7 +816,11 @@ function generate_charts() {
             },
     
             tooltip: {
-                shared: true
+                formatter: function () {
+                    return this.series.name + ': ' + '<b>' + this.y + '</b>' 
+                        
+                },
+                shared: false
             },
     
     
@@ -966,6 +957,16 @@ function generate_charts() {
             },
     
             plotOptions: {
+                series: {
+                    states: {
+                        hover: {
+                            enabled: true,
+                        },
+                        inactive: {
+                            opacity: 1
+                        }
+                        }
+                    },
                 bar: {
                     stacking: 'normal',
                     pointWidth: 2,
@@ -989,6 +990,7 @@ function generate_charts() {
             dataLabels: {
                 enabled: true,
                 backgroundColor: '#cf6f49',
+                zIndex: 3,
                 shape: 'circle',
                 align: 'right',
                 allowOverlap: true,
@@ -997,12 +999,22 @@ function generate_charts() {
                     textOutline: 'transparent',
                     fontSize: '0px'
                 },
-                formatter () {
-                    if (this.y==0) {
-                        return '<img src="http://127.0.0.1:8000/media/img/2022-07-18.png"></img>'
-                    }
-                    return 1
-                }
+                useHTML: true,
+                // formatter () {
+                //     if (this.y==0) {
+                //         return '<div style="width: 10px; height: 10px; overflow: hidden; border-radius: 50%; margin-left: 0px">' +
+                // '<img src="http://127.0.0.1:8000/media/img/dot.png" ' +
+                // 'style="width: 30px; margin-left: -5px; margin-top: -2px"></div>'
+                //         // function (chart) {
+                //         //         chart.renderer.image('https://www.highcharts.com/samples/graphics/sun.png',100,190,30,30)
+                //         //             .add();
+                                    
+                //         //     }
+                //         // return '<img src="http://127.0.0.1:8000/media/img/dot.png"></img>'
+                //     }
+                //     return 1
+                    
+                // }
             }
             
             },
@@ -1016,6 +1028,7 @@ function generate_charts() {
             
             
                 dataLabels: {
+                    zIndex: 2,
                     enabled: true,
                     backgroundColor: '#2e8b57',
                     shape: 'circle',
@@ -1046,6 +1059,7 @@ function generate_charts() {
                 ],
             },
             dataLabels: {
+                zIndex: 3,
                 enabled: true,
                 backgroundColor: '#cf6f49',
                 shape: 'circle',
@@ -1066,16 +1080,21 @@ function generate_charts() {
             enableMouseTracking: false,
             showInLegend: false,
             dataLabels: {
+                zIndex: 2,
                 enabled: true,
                 backgroundColor: '#2e8b57',
                 shape: 'circle',
                 align: 'right',
+                x: 5.5,
+                crop: false, 
+                overflow: 'none',
+                //floating: true,
                 //allowOverlap: true,
                 style: {
                     textOutline: 'transparent',
                     fontSize: '0px'
                 }
-            }
+            },
         }
     
             ]
@@ -1244,7 +1263,10 @@ function generate_charts() {
 var data = $.getValues("/generate-data");
 
 
+
+
 if (data !==null) {
+    console.log(data['Bu Data']['categories'].length)
     generate_charts()
 }
 

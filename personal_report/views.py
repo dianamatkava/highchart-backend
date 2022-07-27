@@ -6,8 +6,6 @@ import os
 import pandas as pd
 from django.views.decorators.csrf import csrf_exempt
 
-import urllib.request
-
 from django.core.files.storage import FileSystemStorage
 
 
@@ -25,28 +23,19 @@ def import_rpt(request):
     return render(request, 'import_rpt.html')
 
 
-def clumpValues(data, data_categories):
-    pass
-    
-
-
-
 @csrf_exempt
 def generate_data(request, file=None):
 
     x = int()
-    
-    
     if request.method == 'POST':
     
         data = dict()
-        filepath = 'http://highchart.azurewebsites.net/media/'
-        url = filepath.replace(" ","")
-        filepath = urllib.request.urlopen(url).read()
+        filepath = r'media\\'
         filename = request.session.get('filename')
         
-        xls = pd.ExcelFile(os.path.join(filepath, filename))
         
+        xls = pd.ExcelFile(os.path.join(settings.BASE_DIR, filepath, filename))
+        print(xls)
         # Get data from Page 1 of Cohort Report Data      
                 
         pg1 = pd.read_excel(xls, 'pg1')
@@ -86,8 +75,6 @@ def generate_data(request, file=None):
                         if len(cell) > 2:
                             if not pd.isna(metric_list[0][2]):
                                 data[key][metric_list[0][2]] = []
-
-                    print(cell)
                         
                     if type(cell[1]) in [int, float]:
                         data[key]['categories'].append(cell[0])
@@ -166,7 +153,7 @@ def generate_data(request, file=None):
         data_obj = json.dumps(data, indent = 4) 
         del request.session['filename']
         
-        print(data_obj)
+        # print(data_obj)
         return JsonResponse(data_obj, safe=False)
 
 
