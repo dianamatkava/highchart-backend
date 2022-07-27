@@ -6,6 +6,8 @@ import os
 import pandas as pd
 from django.views.decorators.csrf import csrf_exempt
 
+import urllib.request
+
 from django.core.files.storage import FileSystemStorage
 
 
@@ -38,10 +40,12 @@ def generate_data(request, file=None):
     if request.method == 'POST':
     
         data = dict()
-        filepath = r'media\\'
+        filepath = 'http://highchart.azurewebsites.net/media/'
+        url = filepath.replace(" ","")
+        filepath = urllib.request.urlopen(url).read()
         filename = request.session.get('filename')
         
-        xls = pd.ExcelFile(os.path.join(settings.BASE_DIR, filepath, filename))
+        xls = pd.ExcelFile(os.path.join(filepath, filename))
         
         # Get data from Page 1 of Cohort Report Data      
                 
