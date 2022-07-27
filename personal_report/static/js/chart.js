@@ -8,10 +8,9 @@ jQuery.extend({
             async: false,
             success: function(data, textStatus, jqXHR) {
                 result = JSON.parse(data);
-                alert(result)
             },
             error: function(data) {
-                alert(error)
+                // alert(error)
             }
         });
        return result;
@@ -55,6 +54,16 @@ function generate_charts() {
         }
         return array
     }
+
+    function generate_remnant2 (table_name) {
+        let array = []
+        let max = Math.max.apply(Math, data[table_name]['Learners']) * 1.3
+
+        for (const num of data[table_name]['Learners']) {
+            array.push(max-num)
+        }
+        return array
+    }
     function generate_gap_subcategories(text, length=null) {let list = []; for (let i=1; i<=10; i++){list.push(text) } return list}
 
 
@@ -64,6 +73,7 @@ function generate_charts() {
             type: 'pie',
             backgroundColor: '#272726',
             width: 700,
+            marginLeft: -100,
             style: {
                 fontFamily: 'Poppins'
             }
@@ -72,24 +82,27 @@ function generate_charts() {
                 enabled: false
             },
             title: {
-            text: 'Expertise',
-            y: 120, 
-            x: 176,
-            style: {
-                color: '#FFFFFF',
-                fontWeight: 'bold',
-                fontSize: '20px'
-            }
+            text: null
+            
             },
             colors: ['#3b844e', '#3984bc', '#ddd64e', '#cf6f4a', '#9b3745'],
             legend: {
+                title: {
+                    text: 'Expertise',
+                    style: {
+                color: '#FFFFFF',
+                fontWeight: 'bold',
+                fontSize: '22px',
+                //letterSpacing: 1000
+            }
+                },
                 className: 'expertiseLegend',
                 layout: 'vertical',
                 symbolRadius: 0,
                 symbolPadding: 13,
                 symbolHeight: 15,
                 labelFormatter: function() {
-                    return `<div style="display: flex; justify-content: space-between; width: 190px"><span style="color:#a9a9a9;">${this.name}</span><img src='{% media "img\\2022-07-18.png" %}'></img> <span>${Math.round(this.percentage)}</span></div>`;
+                    return `<div style="display: flex; justify-content: space-between; width: 215px"><span style="color:#a9a9a9;">${this.name}</span> <span>${Math.round(this.percentage)}</span></div>`;
                 },
                 useHTML: true,
                 itemStyle: {
@@ -103,9 +116,9 @@ function generate_charts() {
                 },
                 itemMarginTop: 10,
                 margin: -10,
-                x: 240,
+                x: 200,
                 floating: true,
-                y: -80        },
+                y: -215 + 30*(data['Expertise']['categories'].length - 1)        },
             tooltip: {
             pointFormat: '{data.name} ({point.percentage:.1f}%)'
             },
@@ -123,7 +136,8 @@ function generate_charts() {
                 },
                 showInLegend: true,
                 borderColor: '#272726',
-                size: '60%'
+                size: '60%',
+                
             }
             },
             series: [{
@@ -149,17 +163,18 @@ function generate_charts() {
                 enabled: false
             },
             title: {
-            text: 'Gender',
-            y: 130, 
-            x: 166, 
-            style: {
+            text: null
+            },
+            colors: ['#3b844e', '#3984bc', '#9b3745'],
+            legend: {
+                title: {
+                    text: 'Gender',
+                    style: {
                 color: '#FFFFFF',
                 fontWeight: 'bold',
                 fontSize: '20px'
             }
-            },
-            colors: ['#3b844e', '#3984bc', '#9b3745'],
-            legend: {
+                },
                 className: 'genderLegend',
                 layout: 'vertical',
                 symbolRadius: 0,
@@ -223,17 +238,18 @@ function generate_charts() {
                 enabled: false
             },
             title: {
-            text: 'Role',
-            y: 125, 
-            x: -5, 
-            style: {
+            text: null
+            },
+            colors: ['#3b844e', '#3984bc', '#9b3745'],
+            legend: {
+                title: {
+                    text: 'Role',
+                    style: {
                 color: '#FFFFFF',
                 fontWeight: 'bold',
                 fontSize: '20px'
             }
-            },
-            colors: ['#3b844e', '#3984bc', '#9b3745'],
-            legend: {
+                },
                 className: 'roleLegend',
                 layout: 'vertical',
                 symbolRadius: 0,
@@ -281,7 +297,7 @@ function generate_charts() {
             }]
         });
     })
-    
+
     document.addEventListener('DOMContentLoaded', function () {
         Highcharts.chart('container4', {
         chart: {
@@ -297,17 +313,18 @@ function generate_charts() {
                 enabled: false
             },
             title: {
-            text: 'Work Experience',
-            y: 130, 
-            x: 55,
-            style: {
+            text: null
+            },
+            colors: ['#3b844e', '#3984bc', '#ddd64e', '#cf6f4a', '#9b3745'],
+            legend: {
+                title: {
+                    text: 'Work Experience',
+                    style: {
                 color: '#FFFFFF',
                 fontWeight: 'bold',
                 fontSize: '20px'
             }
-            },
-            colors: ['#3b844e', '#3984bc', '#ddd64e', '#cf6f4a', '#9b3745'],
-            legend: {
+                },
                 className: 'experienceLegend',
                 layout: 'vertical',
                 symbolRadius: 0,
@@ -336,8 +353,12 @@ function generate_charts() {
             }
             },
             plotOptions: {
+            series: {
+                 slicedOffset: 0
+             },
             pie: {
                 allowPointSelect: true,
+                
                 cursor: 'pointer',
                 dataLabels: {
                 enabled: false
@@ -355,16 +376,24 @@ function generate_charts() {
         });
     })
     
+    if (data['Location data']['categories'].length == 1) {
+        h = 115
+    }
+    else {
+        h = 60*data['Location data']['categories'].length+27
+    }
     
     document.addEventListener('DOMContentLoaded', function () {
         Highcharts.chart('container5', {
             chart: {
+                backgroundColor: 'transparent',
                 type: 'bar',
                 style: {
                     fontFamily: 'Poppins'
                 },
-                height: 100*data['Location data']['categories'].length
-                //marginTop: -67
+                height: h,
+                marginTop: 67,
+                marginBottom: -12
                 //width: 514
             },
             credits: {
@@ -409,24 +438,35 @@ function generate_charts() {
                 series: {
                     stacking: 'normal',
                     borderWidth: 0,
-                    pointWidth: 28
+                    // groupPadding: 0.15, 
+                    // pointPadding: 0.15,
+                    maxPointWidth: 35
+                    //pointWidth: 28
+                    
                 },
             },
             series: [{
                 name: 'Blank',
                 data: generate_remnant('Location data'),
-                enableMouseTracking: false
+                enableMouseTracking: false,
+                dataLabels: {
+                    enabled: true,
+                    formatter: function() {
+                        return Math.max.apply(Math, data['Location data']['Learners']) * 1.2 - this.y
+                    },
+                    style: {
+                        fontSize: '20px',
+                        color: '#282828',
+                        textOutline: 0
+                    },
+                    align: 'left',
+                    y: 2
+                }
             }, {
                 name: 'Participants',
                 data: data['Location data']['Learners'],
                 dataLabels: {
-                    enabled: true,
-                    style: {
-                        fontSize: '20px',
-                        color: '#282828'
-                    },
-                    align: 'right',
-                    x: 30,
+                    enabled: false,
                 }
             }]
         });
@@ -440,7 +480,7 @@ function generate_charts() {
                     fontFamily: 'Poppins'
                 },
                 marginTop: 67,
-                height: 33*data['Bu Data']['categories'].length,
+                height: 66*data['Bu Data']['categories'].length,
             },
             credits: {
                 enabled: false
@@ -459,7 +499,10 @@ function generate_charts() {
                 labels: {
                     style: {
                         color: '#4b4b4e',
-                        fontSize: '18px',
+                        fontSize: '16px',
+                        marginRight: 20,
+                        width: 200,
+                        overflowWrap: 'anywhere'
                     },
                     align: 'left',
                     x:0
@@ -484,24 +527,32 @@ function generate_charts() {
                 series: {
                     stacking: 'normal',
                     borderWidth: 0,
-                    pointWidth: 18,
+                    groupPadding: 0.15,
+                    pointPadding:0.15
                 },
             },
             series: [{
                 name: 'Blank',
                 data: generate_remnant('Bu Data'), // data['Bu Data']['Learners'].map(function (x) {return Math.max(data['Bu Data']['Learners']) + 3 - x }),
-                enableMouseTracking: false
+                enableMouseTracking: false,
+                dataLabels: {
+                    enabled: true,
+                    formatter: function() {
+                        return Math.max.apply(Math, data['Bu Data']['Learners']) * 1.2 - this.y
+                    },
+                    style: {
+                        fontSize: '20px',
+                        color: '#282828',
+                        textOutline: 0
+                    },
+                    align: 'left',
+                    y: 2
+                }
             }, {
                 name: 'Participants',
                 data: data['Bu Data']['Learners'],
                 dataLabels: {
-                    enabled: true,
-                    style: {
-                        fontSize: '20px',
-                        color: '#282828'
-                    },
-                    align: 'right',
-                    x: 30
+                    enabled: false,
                 }
             }]
         });
@@ -549,14 +600,14 @@ function generate_charts() {
             xAxis: {
                 categories: data['Module data']['categories'],
                 lineColor: 'transparent',
-                offset: 200,
+                offset: 230,
                 labels: {
                     align: 'left',
                     x: 0,
                     style: {
                         color: '#4b4b4e',
                         fontWeight: 540,
-                        fontSize: '17px'
+                        fontSize: '16px'
                     }
                 }
             },
@@ -621,6 +672,132 @@ function generate_charts() {
                 legendIndex: 1
             }]
         });
+    })
+
+    document.addEventListener('DOMContentLoaded', function () {
+        Highcharts.chart('container7', {
+            chart: {
+                backgroundColor: '#f5f5f5',
+                type: 'column',
+                style: {
+                    fontFamily: 'Poppins'
+                },
+                inverted: 'true',
+                height: 250,
+    //             width: 952,
+    //             marginTop: 70
+            },
+            credits: {
+                enabled: false
+            },
+    
+            title: {
+                text: 'Certification Level',
+                align: 'left',
+                style: {
+                    fontWeight: 'bold',
+                    fontSize: '20px'
+                }
+            },
+    
+            xAxis: {
+                categories: data['Certification Level']['categories'],
+                offset: 150,
+                lineColor: 'transparent',
+                labels: {
+                    style: {
+                        color: '#36454F',
+                        fontSize: '16px'
+                    },
+                    align: 'left',
+                    x: 0
+                },
+            },
+    
+            yAxis: {
+                title: {
+                enabled: false
+                },
+                labels: {
+                enabled: false
+                },
+                gridLineWidth: 0,
+                width: 400
+              },
+    
+            // tooltip: {
+            //     formatter: function () {
+            //         return '<b>' + this.x + '</b><br/>' +
+            //             this.series.name + ': ' + this.y + '<br/>' +
+            //             'Total: ' + this.point.stackTotal;
+            //     }
+            // },
+            colors: ['#df182d', '#9d9d9c', '#3b844e', '#fab634'],
+    
+            plotOptions: {
+                column: {
+                    stacking: 'normal',
+                    //colorByPoint: false
+                    
+                },
+                series: {
+                borderWidth: 0,
+                //pointWidth: 30,
+                pointPadding: 0.15, 
+                groupPadding: 0.12
+                }
+                },
+            legend: {
+                enabled: false,        
+            },
+            series: [
+            {
+                name: 'Remainder',
+                showInLegend: false,
+                data: generate_remnant2('Certification Level'),
+                enableMouseTracking: false,
+                color: '#ffffff',
+                dataLabels: {
+                    enabled: true,
+                    align: 'left',
+                    verticalAlign: 'center',
+                    color: '#5e5e5e',
+                    formatter: function () {
+                        return (Math.max.apply(Math, data['Certification Level']['Learners'])*1.3) - this.y + " (" + Math.round(((Math.max.apply(Math, data['Certification Level']['Learners'])*1.3) - this.y)/data['Certification Level']['Learners'].reduce((a, b) => a + b, 0)*100) + "%)"
+                    },
+                    style: {
+                        fontSize: '15px',
+                        textOutline: 0
+                    },
+                    //y:2
+                }
+    
+            },{
+                name: 'Learners',
+                data: data['Certification Level']['Learners'],
+                colors: ['#df182d', '#9d9d9c', '#3b844e', '#fab634'],
+                colorByPoint: true,
+            
+                dataLabels: {
+                    enabled: false,
+                //     color: '#5e5e5e',
+                //     align: 'right',
+                //     verticalAlign: 'center',
+                //     formatter: function () {
+                //          return this.y + " (" + Math.round((this.y/data['Certification Level']['Learners'].reduce((a, b) => a + b, 0))*100) + "%)"
+                //         // "(" + this.y/Math.sum.apply(Math, data['Certification Level']['Learners'])*100 + " )"
+                //     },
+                //     align: 'right',
+                //     x: 65,
+                //     style: {
+                //         fontSize: '15px',
+                //         textOutline: 0
+                //     },
+                },
+            }
+            ]
+        },
+    );
     })
     
     document.addEventListener('DOMContentLoaded', function () {
@@ -747,7 +924,7 @@ function generate_charts() {
             offset: 285
                 },
                 {
-                categories: data['Gap to Goal Data']['Module/Stage']['PRE']['Gap'].map(function(x) {return `+${x}`}),
+                categories: data['Gap to Goal Data']['Module/Stage']['PRE']['Gap'].map(function(x) {return `+${Highcharts.numberFormat(x,2)}`}),
                     linkedTo: 0,
                     opposite: true,
                     labels: {
@@ -762,12 +939,12 @@ function generate_charts() {
                 lineColor: 'transparent'
                 },
             {
-                categories: data['Gap to Goal Data']['Module/Stage']['POST']['Gap'].map(function(x) {return `+${x}`}),
+                categories: data['Gap to Goal Data']['Module/Stage']['POST']['Gap'].map(function(x) {return `+${Highcharts.numberFormat(x,2)}`}),
                 linkedTo: 0,
                 opposite: true,
                 lineColor: 'transparent',
                 labels: {
-                    x: -40,
+                    x: -36,
                     y:14,
                     style: {
                         color: '#cc5500',
@@ -963,8 +1140,9 @@ function generate_charts() {
             tooltip: {
                 formatter: function () {
                     return '<b>' + this.x + '</b><br/>' +
-                        this.series.name + ': ' + this.y + '<br/>' +
-                        'Total: ' + this.point.stackTotal;
+                        this.series.name + ': ' + this.y 
+                        // + '<br/>' +
+                        // 'Total: ' + this.point.stackTotal;
                 }
             },
     

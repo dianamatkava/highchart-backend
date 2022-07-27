@@ -23,9 +23,16 @@ def import_rpt(request):
     return render(request, 'import_rpt.html')
 
 
+def clumpValues(data, data_categories):
+    pass
+    
+
+
 
 @csrf_exempt
 def generate_data(request, file=None):
+
+    x = int()
     
     
     if request.method == 'POST':
@@ -48,6 +55,7 @@ def generate_data(request, file=None):
                 if type(cell2) in [int, float]:
                     data[key][cell1] = round(cell2, 2)
                 
+        
         # Get data from Page 2, 3 and 5
         pg2 = pd.read_excel(xls, 'pg2')  
         pg3 = pd.read_excel(xls, 'pg3')
@@ -59,6 +67,7 @@ def generate_data(request, file=None):
                 pg3.values.tolist(), 
                 pg5.values.tolist()
                 ]:
+
             for index, cell in enumerate(pg):
                     
                 if not pd.isna(cell[1]):
@@ -73,6 +82,8 @@ def generate_data(request, file=None):
                         if len(cell) > 2:
                             if not pd.isna(metric_list[0][2]):
                                 data[key][metric_list[0][2]] = []
+
+                    print(cell)
                         
                     if type(cell[1]) in [int, float]:
                         data[key]['categories'].append(cell[0])
@@ -89,7 +100,7 @@ def generate_data(request, file=None):
             for index, value in enumerate(data[key]['categories']):
                 data[key].setdefault(value, data[key]['Learners'][index])
                 
-         
+        
         
         pg4 = pd.read_excel(xls, 'pg4') 
         
@@ -128,10 +139,30 @@ def generate_data(request, file=None):
                         data[key]['Module/Stage'][cell[1]][metric_list[0][val]].append(round(cell[val], 2))
                         data[key]['Module/Stage'][pg4.values.tolist()[index*2+1][1]][metric_list[0][val]].append(round(pg4.values.tolist()[index*2+1][val], 2))
         
-        
+        for key_name in ['Bu Data', 'Location data']:
+
+            if len(data[key_name]['Learners']) > 10:
+                x = data[key_name]['Learners'][len(data[key_name]['Learners'])-1]
+                other = 0
+                
+                for i in range(len(data[key_name]['Learners']), 0, -1):  #(i=data.length-1; i!=0; i--)
+                
+                    if x!= data[key_name]['Learners'][i-1]: # (x!=data[i]) {
+                        if i-1 <= 9:
+                            data[key_name]['Learners'] = data[key_name]['Learners'][0:i]
+                            data[key_name]['Learners'].append(other)
+                            #values.push(other)
+                            data[key_name]['categories'] = data[key_name]['categories'][0:len(data[key_name]['Learners'])-1]
+                            data[key_name]['categories'].append('Other')
+                            break 
+                        
+                        x = data[key_name]['Learners'][i-1]
+                    other += int(data[key_name]['Learners'][i-1])
+                    
         data_obj = json.dumps(data, indent = 4) 
-        print(data_obj)
         del request.session['filename']
+        
+        print(data_obj)
         return JsonResponse(data_obj, safe=False)
 
 
