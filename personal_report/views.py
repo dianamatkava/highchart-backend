@@ -1,7 +1,8 @@
-import json
+from collections import defaultdict
 from django.conf import settings
 from django.http import JsonResponse
 from django.shortcuts import render
+import json
 import os
 import pandas as pd
 from django.views.decorators.csrf import csrf_exempt
@@ -23,137 +24,108 @@ def import_rpt(request):
     return render(request, 'import_rpt.html')
 
 
+def round_score(num:int(), truncate:int(), persentage:bool()):
+            if persentage:
+                return round(round(num++1e-06, truncate)*100)
+            return round(num++1e-06, truncate)
+        
+        
+def truncate_items(data:dict(), table_list:list()):
+    # import pdb;pdb.set_trace()
+    for table in table_list:
+        if len(data[table]['LEARNERS']) > 10:
+            x = data[table]['LEARNERS'][len(data[table]['LEARNERS'])-1]
+            other = 0
+            
+            for i in range(len(data[table]['LEARNERS']), 0, -1): 
+                if x!= data[table]['LEARNERS'][i-1]:
+                    if i-1 < 9:
+                        data[table]['LEARNERS'] = data[table]['LEARNERS'][0:i]
+                        data[table]['LEARNERS'].append(other)
+                        
+                        data[table][table] = data[table][table][0:len(data[table]['LEARNERS'])-1]
+                        data[table][table].append('Other')
+                        
+                        # Truncate dict
+                        del_key = list()
+                        for key in data[table].keys():
+                            if not key in data[table][table] and not key in [table, 'LEARNERS']:
+                                del_key.append(key)
+                        list(map(data[table].__delitem__, filter(data[table].__contains__,del_key)))
+                        break
+                    
+                    x = data[table]['LEARNERS'][i-1]
+                other += int(data[table]['LEARNERS'][i-1])
+    return data
+
+
 @csrf_exempt
 def generate_data(request, file=None):
 
     x = int()
     if request.method == 'POST':
     
-        data = dict()
-        filepath = r'media\\'
+        data = defaultdict(lambda: defaultdict(dict))
+        filepath = r'media'
         filename = request.session.get('filename')
-        
-        
+
         xls = pd.ExcelFile(os.path.join(settings.BASE_DIR, filepath, filename))
-        print(xls)
-        # Get data from Page 1 of Cohort Report Data      
+        pages = [pd.read_excel(xls, f'pg{num}') for num in range(1, 6)]
+        
+        table_title, keys_list = str(), list()
+        values_list, persentage =[[]]*3, int()
+        for page in pages:
+            for row in page.iterrows():
                 
-        pg1 = pd.read_excel(xls, 'pg1')
-        key = str()
-        for cell1, cell2 in pg1.values.tolist():
-            if not pd.isna(cell2):
-                if cell1 == '>>>':
-                    key = cell2
-                    data[key] = {}
-                if type(cell2) in [int, float]:
-                    data[key][cell1] = round(cell2, 2)
-                
-        
-        # Get data from Page 2, 3 and 5
-        pg2 = pd.read_excel(xls, 'pg2')  
-        pg3 = pd.read_excel(xls, 'pg3')
-        pg5 = pd.read_excel(xls, 'pg5')
-        metric_list = list()
-        
-        for pg in [
-                pg2.values.tolist(), 
-                pg3.values.tolist(), 
-                pg5.values.tolist()
-                ]:
-
-            for index, cell in enumerate(pg):
-                    
-                if not pd.isna(cell[1]):
-                    if cell[0] == '>>>':
-                        metric_list = []
-                        metric_list.append([i for i in pg[index+1]])
-                        key = cell[1]
-                        data[key] = {}
-                        data[key]['categories'] = []
-                        data[key][metric_list[0][1]] = []
+                if not pd.isna(row[1][0]):   
+                    # Define table title and set up new dict                 
+                    if type(row[1][0])==str and row[1][0][0:3].startswith(('>>>', '<<<')):
+                        table_title = '_'.join(row[1][0].split()[1::]).upper()
+                        persentage = 1 if str(row[1][1]) == '%' else 0
+                        data[table_title] = dict()
                         
-                        if len(cell) > 2:
-                            if not pd.isna(metric_list[0][2]):
-                                data[key][metric_list[0][2]] = []
-                        
-                    if type(cell[1]) in [int, float]:
-                        data[key]['categories'].append(cell[0])
-                        data[key][metric_list[0][1]].append(round(cell[1], 2))
-                        if len(cell) > 2:
-                            if not pd.isna(metric_list[0][2]):
-                                data[key][metric_list[0][2]].append(round(cell[2], 2))
-                        
-        # Convert dict<key:list> to dict<key:value> for the following tables
-        # might be dynamic 
-        table_list = ['Expertise', 'Role', 'Gender', 'Work Experience']
-
-        for key in table_list:
-            for index, value in enumerate(data[key]['categories']):
-                data[key].setdefault(value, data[key]['Learners'][index])
-                
-        
-        
-        pg4 = pd.read_excel(xls, 'pg4') 
-        
-        for index, cell in enumerate(pg4.values.tolist()[0::2][0:-1]):
-            if not pd.isna(cell[1]):
-                if cell[0] == '>>>':
-                    metric_list = []
-                    metric_list.append([i for i in pg4.values.tolist()[index*2+1]])
-        
-                    key = cell[1]
-                    data[key] = {}
-                    data[key]['categories'] = []
-                    
-                    
-                    for i in pg4.values.tolist()[1::2]:
-                        data[key][i[0]] = {}
-                        for form in ['PRE', 'POST']:
-                            data[key][i[0]][form] = {}
+                    # Defines if wether we are looping throught headers
+                    elif len(row[1]) < 4 and type(row[1][1]) == str: 
+                        keys_list = '_'.join(str(row[1][0]).split()).upper()
+                        if len(row[1]) < 4:
+                            values_list[0] = '_'.join(row[1][1].split()).upper()
+                            if len(row[1]) == 3 and type(row[1][2]) == str:
+                                values_list[1] = '_'.join(row[1][2].split()).upper()
+                                
+                    # Defines if wether we are looping throught headers on page 4    
+                    elif len(row[1]) > 3 and type(row[1][3]) == str:
+                        keys_list = '_'.join(str(row[1][0]).split()).upper()
+                        values_list[0] = '_'.join(row[1][2].split()).upper()
+                        values_list[1] = '_'.join(row[1][3].split()).upper()
+                        values_list[2] = '_'.join(row[1][4].split()).upper()
                             
-                            data[key][i[0]][form][metric_list[0][2]] = []
-                            data[key][i[0]][form][metric_list[0][3]] = []
-                            data[key][i[0]][form][metric_list[0][4]] = []
-                    
-                if type(cell[2]) in [int, float] and cell[0] != '>>>' :
-                    data[key]['categories'].append(cell[0])
-                    
-                    data[key][cell[0]][cell[1]][metric_list[0][2]] = round(cell[2], 2)
-                    data[key][cell[0]][cell[1]][metric_list[0][3]] = round(cell[3], 2)
-                    data[key][cell[0]][cell[1]][metric_list[0][4]] = round(cell[4], 2)
-                    
-                    data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][2]] = round(pg4.values.tolist()[index*2+1][2], 2)
-                    data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][3]] = round(pg4.values.tolist()[index*2+1][3], 2)
-                    data[key][cell[0]][pg4.values.tolist()[index*2+1][1]][metric_list[0][4]] = round(pg4.values.tolist()[index*2+1][4], 2)
-
-                    for val in range(2, len(metric_list[0])):
-                        data[key]['Module/Stage'][cell[1]][metric_list[0][val]].append(round(cell[val], 2))
-                        data[key]['Module/Stage'][pg4.values.tolist()[index*2+1][1]][metric_list[0][val]].append(round(pg4.values.tolist()[index*2+1][val], 2))
-        
-        for key_name in ['Bu Data', 'Location data']:
-
-            if len(data[key_name]['Learners']) > 10:
-                x = data[key_name]['Learners'][len(data[key_name]['Learners'])-1]
-                other = 0
-                
-                for i in range(len(data[key_name]['Learners']), 0, -1):  #(i=data.length-1; i!=0; i--)
-                
-                    if x!= data[key_name]['Learners'][i-1]: # (x!=data[i]) {
-                        if i-1 <= 9:
-                            data[key_name]['Learners'] = data[key_name]['Learners'][0:i]
-                            data[key_name]['Learners'].append(other)
-                            #values.push(other)
-                            data[key_name]['categories'] = data[key_name]['categories'][0:len(data[key_name]['Learners'])-1]
-                            data[key_name]['categories'].append('Other')
-                            break 
+                    # Looping through main table content (values). 
+                    elif len(row[1]) < 4: 
+                        data[table_title][row[1][0]] = round_score(row[1][1], 2, persentage)
+                        data[table_title].setdefault(keys_list, []).append(row[1][0])
+                        data[table_title].setdefault(values_list[0], []).append(round_score(row[1][1], 2, persentage))
+                        if len(row[1]) == 3 and not pd.isna(row[1][2]):
+                            data[table_title].setdefault(values_list[1], []).append(round_score(row[1][2], 2, persentage))
+                            
+                    # Looping through main table content (values) on page 4        
+                    else:
+                        data[table_title].setdefault(keys_list, []).append(row[1][0])
+                        data[table_title].setdefault(row[1][1], {})
                         
-                        x = data[key_name]['Learners'][i-1]
-                    other += int(data[key_name]['Learners'][i-1])
-                    
+                        data[table_title][row[1][1]].setdefault(values_list[0], []).append(round_score(row[1][2], 2, persentage))
+                        data[table_title][row[1][1]].setdefault(values_list[1], []).append(round_score(row[1][3], 2, persentage))
+                        data[table_title][row[1][1]].setdefault(values_list[2], []).append(round_score(row[1][4], 2, persentage))
+                        
+            # Remove duplicates from Module/Stage (page4)
+            data['GAP_TO_GOAL']['MODULE/STAGE'] = list(dict.fromkeys(data['GAP_TO_GOAL']['MODULE/STAGE']))
+            
+        # Merge xtra items (more the 10) to "Other"
+        data = truncate_items(data, ['BUSINESS_UNIT', 'LOCATION', 'EXPERTISE'])
+        
         data_obj = json.dumps(data, indent = 4) 
         del request.session['filename']
         
-        # print(data_obj)
+        print(data_obj)
         return JsonResponse(data_obj, safe=False)
 
 
