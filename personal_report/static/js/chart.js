@@ -18,6 +18,11 @@ jQuery.extend({
 });
 
 
+(function (H) {
+    H.wrap(H.Legend.prototype, 'handleOverflow', function (p, h) {
+        return h;
+    });
+}(Highcharts));
 
 
   function generate_charts(data) {
@@ -42,7 +47,7 @@ jQuery.extend({
             Highcharts.charts[i].exportChart({
                 type: 'image/svg+xml'
             });
-        }, i * 5000);
+        }, i * 7000);
         }
     }
     
@@ -51,7 +56,7 @@ jQuery.extend({
         setTimeout(function timer() {
             console.log(i)
             Highcharts.charts[i].exportChart();
-        }, i * 5000);
+        }, i * 7000);
         }
     }
   
@@ -130,8 +135,10 @@ jQuery.extend({
           chart: {
           type: 'pie',
           backgroundColor: '#272726',
-          width: 700,
-          marginLeft: -100,
+          width: 460,
+          height: 320,
+          marginLeft: -258,
+          marginTop: -108,
           style: {
               fontFamily: 'Poppins'
           }
@@ -197,9 +204,13 @@ jQuery.extend({
               },
               itemMarginTop: 9,
               margin: -10,
-              x: 190,
+              x: 185,
               floating: true,
-              y: y        },
+              align: "top",
+              y: -255+data['EXPERTISE']['EXPERTISE'].length*27
+            //   {1: -228,  2: -201, 10: ?}
+            
+            },
           tooltip: {
           pointFormat: '{data.name} ({point.percentage:.1f}%)'
           },
@@ -220,7 +231,7 @@ jQuery.extend({
               },
               showInLegend: true,
               borderColor: '#272726',
-              size: '49%',
+              size: '44%',
           }
           },
           series: [{
@@ -241,17 +252,20 @@ jQuery.extend({
               colors.push(colorCycle[x])
           }
       }
+
   
       Highcharts.chart('container2', {
-          chart: {
-          type: 'pie',
-          backgroundColor: '#272726',
-          width: 700,
-          marginLeft: -100,
-          style: {
-              fontFamily: 'Poppins'
-          }
-          },
+            chart: {
+                type: 'pie',
+                backgroundColor: '#272726',
+                width: 460,
+                height: 193,
+                marginLeft: -258,
+                marginTop: 15,
+                style: {
+                    fontFamily: 'Poppins'
+                }
+            },
           exporting: {
               allowHTML: true,
               enabled: enableDownload(),
@@ -262,72 +276,77 @@ jQuery.extend({
               enabled: false
           },
           title: {
-          text: null
+            text: null
           },
-          colors: colors,
-          legend: {
-              title: {
-                  text: 'Gender',
-                  style: {
-              color: '#FFFFFF',
-              fontWeight: 600,
-              fontFamily: 'Poppins',
-              fontSize: '23px'
-          }
-              },
-              className: 'genderLegend',
-              layout: 'vertical',
-              symbolRadius: 0,
-              symbolPadding: 13,
-              symbolHeight: 15,
-              labelFormatter: function() {
-                  if (this.index + 1 == data['GENDER']['GENDER'].length){
-                      return `<div style="display: flex; justify-content: space-between; width: 220px;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
-                  }
-                  else {
-                      return `<div style="display: flex; justify-content: space-between; width: 220px;border-bottom: 1px solid #4b4b4e;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
-                  }
-  
-              },
-              useHTML: true,
-              itemStyle: {
-                  color: '#ffffff',
-                  fontSize: '16px',
-                  fontWeight: 'thin'
-              },
-              itemMarginTop: 10,
-              margin: -10,
-              x: 190,
-              floating: true,
-              y: -215 + 30*(data['GENDER']['GENDER'].length - 1)
-          },
+            colors: colors,
+            legend: {
+                title: {
+                    text: 'Gender',
+                    style: {
+                        color: '#FFFFFF',
+                        fontWeight: 600,
+                        fontFamily: 'Poppins',
+                        fontSize: '23px'
+                    }
+                },
+                className: 'genderLegend',
+                layout: 'vertical',
+                symbolRadius: 0,
+                symbolPadding: 13,
+                symbolHeight: 15,
+                labelFormatter: function() {
+                    if (this.index + 1 == data['GENDER']['GENDER'].length){
+                        return `<div style="display: flex; justify-content: space-between; width: 220px;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
+                    }
+                    else {
+                        return `<div style="display: flex; justify-content: space-between; width: 220px;border-bottom: 1px solid #4b4b4e;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
+                    }
+    
+                },
+                useHTML: true,
+                itemStyle: {
+                    color: '#ffffff',
+                    fontSize: '16px',
+                    fontWeight: 'thin'
+                },
+                itemMarginTop: 10,
+                margin: -10,
+                x: 185,
+                align: "top",
+                floating: true,
+                verticalAlign: "middle",
+                layout: "vertical",
+                y: -75+data['GENDER']['GENDER'].length*15
+            },
+
           tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+              pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
           },
+
           accessibility: {
-          point: {
-              valueSuffix: '%'
-          }
+            point: {
+                valueSuffix: '%'
+            }
           },
           plotOptions: {
-          series: {
-              slicedOffset: 0
-          },
-          pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-              enabled: false
-              },
-              showInLegend: true,
-              borderColor: '#272726',
-              size: '49%'
-          }
+            series: {
+                slicedOffset: 0
+            },
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: false
+                },
+                showInLegend: true,
+                borderColor: '#272726',
+                size: '112%'
+            }
           },
           series: [{
-          name: 'Fields',
-          colorByPoint: true,
-          data: generate_data_series('GENDER')
+            name: 'Fields',
+            colorByPoint: true,
+            data: generate_data_series('GENDER')
           }]
       });
   
@@ -345,93 +364,104 @@ jQuery.extend({
       }
   
       Highcharts.chart('container3', {
-          chart: {
-          type: 'pie',
-          style: {
-              fontFamily: 'Poppins'
-          },
-          backgroundColor: '#272726',
-          width: 700,
-          marginLeft: -300,
-          },
-          exporting: {
-              allowHTML: true,
-              enabled: enableDownload(),
-              scale: 8,
-              filename: "07 - Role"
-          },
-          credits: {
-              enabled: false
-          },
-          title: {
-          text: null
-          },
-          colors: colors,
-          legend: {
-              title: {
-                  text: 'Role',
-                  style: {
-              color: '#FFFFFF',
-              fontWeight: 600,
-              fontFamily: 'Poppins',
-              fontSize: '23px'
-          }
-              },
-              className: 'roleLegend',
-              layout: 'vertical',
-              symbolRadius: 0,
-              symbolPadding: 13,
-              symbolHeight: 15,
-              labelFormatter: function() {
-                  if (this.index + 1 == data['ROLE']['ROLE'].length) {
-                      return `<div style="display: flex; justify-content: space-between; width: 220px;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
-                  }
-                  else {
-                      return `<div style="display: flex; justify-content: space-between; width: 220px;border-bottom: 1px solid #4b4b4e;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
-                  }
-  
-              },
-              useHTML: true,
-              itemStyle: {
-                  color: '#ffffff',
-                  fontSize: '16px',
-                  fontWeight: 'thin'
-              },
-              itemMarginTop: 10,
-              margin: -10,
-              x: 90,
-              floating: true,
-              y: -215 + 30*(data['ROLE']['ROLE'].length - 1)
-          },
-          tooltip: {
-          pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-          },
-          accessibility: {
-          point: {
-              valueSuffix: '%'
-          }
-          },
-          plotOptions: {
-          series: {
-              slicedOffset: 0
-          },
-          pie: {
-              allowPointSelect: true,
-              cursor: 'pointer',
-              dataLabels: {
-              enabled: false
-              },
-              showInLegend: true,
-              borderColor: '#272726',
-              size: '49%'
-          }
-          },
-          series: [{
-          name: 'Fields',
-          colorByPoint: true,
-          data: generate_data_series('ROLE')
-          }]
-      });
+        chart: {
+            type: 'pie',
+            style: {
+                fontFamily: 'Poppins'
+            },
+            backgroundColor: '#272726',
+            width: 460,
+            height: 193,
+            marginLeft: -258,
+            marginTop: 15,
+        },
+        
+        exporting: {
+            allowHTML: true,
+            enabled: enableDownload(),
+            scale: 8,
+            filename: "07 - Role"
+        },
+
+        credits: {
+            enabled: false
+        },
+
+        title: {
+        text: null
+        },
+
+        colors: colors,
+        legend: {
+            title: {
+                text: 'Role',
+                style: {
+                color: '#FFFFFF',
+                fontWeight: 600,
+                fontFamily: 'Poppins',
+                fontSize: '23px'
+            }
+            },
+            className: 'roleLegend',
+            layout: 'vertical',
+            symbolRadius: 0,
+            symbolPadding: 13,
+            symbolHeight: 15,
+            labelFormatter: function() {
+                if (this.index + 1 == data['ROLE']['ROLE'].length) {
+                    return `<div style="display: flex; justify-content: space-between; width: 220px;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
+                }
+                else {
+                    return `<div style="display: flex; justify-content: space-between; width: 220px;border-bottom: 1px solid #4b4b4e;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
+                }
+
+            },
+            useHTML: true,
+            itemStyle: {
+                color: '#ffffff',
+                fontSize: '16px',
+                fontWeight: 'thin'
+            },
+            itemMarginTop: 10,
+            margin: -10,
+            x: 185,
+            align: "top",
+            floating: true,
+            verticalAlign: "middle",
+            layout: "vertical",
+            y: -75+data['ROLE']['ROLE'].length*15
+        },
+
+        tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        
+        accessibility: {
+        point: {
+            valueSuffix: '%'
+        }
+        },
+        plotOptions: {
+        series: {
+            slicedOffset: 0
+        },
+        pie: {
+            allowPointSelect: true,
+            cursor: 'pointer',
+            dataLabels: {
+            enabled: false
+            },
+            showInLegend: true,
+            borderColor: '#272726',
+            size: '112%'
+        }
+        },
+        series: [{
+            name: 'Fields',
+            colorByPoint: true,
+            data: generate_data_series('ROLE')
+        }]
+    });
   
   
   
@@ -451,9 +481,11 @@ jQuery.extend({
           style: {
               fontFamily: 'Poppins'
           },
-          backgroundColor: '#272726',
-          width: 700,
-          marginLeft: -300
+            backgroundColor: '#272726',
+            width: 460,
+            height: 193,
+            marginLeft: -258,
+            marginTop: 15,
           },
           exporting: {
               allowHTML: true,
@@ -498,11 +530,15 @@ jQuery.extend({
                   fontSize: '16px',
                   fontWeight: 'thin',
               },
-              itemMarginTop: 10,
-              margin: -10,
-              x: 90,
-              floating: true,
-              y: -215 + 30*(data['WORK_EXPERIENCE']['WORK_EXPERIENCE'].length - 1)        },
+                itemMarginTop: 10,
+                margin: -10,
+                x: 185,
+                align: "top",
+                floating: true,
+                verticalAlign: "middle",
+                layout: "vertical",
+                y: -75+data['WORK_EXPERIENCE']['WORK_EXPERIENCE'].length*15
+             },
           tooltip: {
           pointFormat: '{data.name} ({point.percentage:.1f}%)'
           },
@@ -524,7 +560,7 @@ jQuery.extend({
               },
               showInLegend: true,
               borderColor: '#272726',
-              size: '49%'
+              size: '112%'
           }
           },
           series: [{
@@ -544,7 +580,7 @@ jQuery.extend({
               },
               height: 50*data['LOCATION']['LOCATION'].length + 40,
               marginTop: 0,
-              width: 575,
+              width: 590,
               spacingBottom: 0,
               spacingLeft:0,
               spacingTop:0,
