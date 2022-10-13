@@ -909,6 +909,7 @@ jQuery.extend({
               colors.push('#fab634')
           }
       }
+
           Highcharts.chart('container7', {
           chart: {
               backgroundColor: '#f5f5f5',
@@ -946,8 +947,14 @@ jQuery.extend({
           xAxis: {
               categories: data['CERTIFICATION_LEVEL']['LEVEL'],
               offset: 120,
+              max: 3,
               lineColor: 'transparent',
               labels: {
+                    formatter: function() {
+                        console.warn(this.value)
+                        if (Number(this.value)) return 
+                        return this.value
+                    },
                   style: {
                       color: '#36454F',
                       fontSize: '16px'
@@ -959,10 +966,10 @@ jQuery.extend({
   
           yAxis: {
               title: {
-              enabled: false
+                enabled: false
               },
               labels: {
-              enabled: false
+                enabled: false
               },
               gridLineWidth: 0,
               width: 378
@@ -973,12 +980,12 @@ jQuery.extend({
                   stacking: 'normal',
               },
               series: {
-              borderWidth: 0,
-              maxPointWidth: 32,
-              pointPadding: 0.15,
-              groupPadding: 0.12
+                borderWidth: 0,
+                maxPointWidth: 32,
+                pointPadding: 0.15,
+                groupPadding: 0.12
               }
-              },
+            },
           legend: {
               enabled: false,
           },
@@ -1004,7 +1011,6 @@ jQuery.extend({
                       fontSize: '15px',
                       textOutline: 0
                   },
-                  //y:2
               }
   
           },{
