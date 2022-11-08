@@ -92,26 +92,20 @@ jQuery.extend({
             return series_data
         }
         
-        function generate_remnant (table_name) {
-            let array = []
-            let max = Math.max.apply(Math, data[table_name]['LEARNERS']) * 1.2
-        
-            for (const num of data[table_name]['LEARNERS']) {
-                array.push(max-num)
+        function generate_persent_array(array, is_remnant=false) {
+            const sum = array.reduce((accumulator, value) => {
+                return accumulator + value;
+            }, 0);
+            let result_array = [];
+            if (is_remnant == true) {
+                result_array = array.map(function(x) { return 100 - (x * 100/sum)} );
+            } else {
+                result_array = array.map(function(x) { return (x * 100/sum)} );
             }
-            return array
+            
+            return result_array
         }
-        
-        function generate_remnant2 (table_name) {
-            let array = []
-            let max = Math.max.apply(Math, data[table_name]['LEARNERS']) * 1.3
-        
-            for (const num of data[table_name]['LEARNERS']) {
-                array.push(max-num)
-            }
-            return array
-        }
-        
+
         
         function generate_gap_subcategories(text, length=null) {let list = []; for (let i=1; i<=10; i++){list.push(text) } return list}
             if (data['EXPERTISE']['EXPERTISE'].length > 9) {
@@ -619,14 +613,15 @@ jQuery.extend({
                     enabled: false
                 },
                 yAxis: {
+                  max: 100,
                   title: {
-                  enabled: false
+                    enabled: false
                   },
                   labels: {
-                  enabled: false
+                    enabled: false
                   },
                   gridLineWidth: 0,
-                  width: 405
+                  width: 377
                 },
                 colors: ['#f6f6f6', '#3b844e'],
                 plotOptions: {
@@ -639,12 +634,12 @@ jQuery.extend({
                 },
                 series: [{
                     name: 'Blank',
-                    data: generate_remnant('LOCATION'),
+                    data: generate_persent_array(data['LOCATION']['LEARNERS'], true),
                     enableMouseTracking: false,
                     dataLabels: {
                         enabled: true,
                         formatter: function() {
-                            return Math.max.apply(Math, data['LOCATION']['LEARNERS']) * 1.2 - this.y
+                            return data['LOCATION']['LEARNERS'][this.point.index]
                         },
                         style: {
                             fontFamily: 'Poppins',
@@ -658,7 +653,7 @@ jQuery.extend({
                     }
                 }, {
                     name: 'Participants',
-                    data: data['LOCATION']['LEARNERS'],
+                    data: generate_persent_array(data['LOCATION']['LEARNERS'], false),
                     dataLabels: {
                         enabled: false,
                     }
@@ -700,7 +695,7 @@ jQuery.extend({
                     style: {
                         fontFamily: 'Poppins',
                         fontWeight: 'bold',
-                        fontSize: '25px'
+                        fontSize: '25px',
                     }
                 },
                 xAxis: {
@@ -711,6 +706,7 @@ jQuery.extend({
                             color: '#4b4b4e',
                             fontSize: '18px',
                             marginRight: 20,
+                            marginLeft: 5,
                             width: 200,
                             overflowWrap: 'anywhere'
                         },
@@ -723,7 +719,8 @@ jQuery.extend({
                 enabled: false
                 },
                 yAxis: {
-                //type: 'logarithmic',
+                  max: 100,
+                  width: 377,
                   title: {
                   enabled: false
                   },
@@ -731,7 +728,6 @@ jQuery.extend({
                   enabled: false
                   },
                   gridLineWidth: 0,
-                  width: 405
                 },
                 colors: ['#f6f6f6', '#3b844e'],
                 plotOptions: {
@@ -746,12 +742,12 @@ jQuery.extend({
                 series: [
                     {
                     name: 'Blank',
-                    data: generate_remnant('BUSINESS_UNIT'),
+                    data: generate_persent_array(data['BUSINESS_UNIT']['LEARNERS'], true),
                     enableMouseTracking: false,
                     dataLabels: {
                         enabled: true,
                         formatter: function() {
-                            return Math.max.apply(Math, data['BUSINESS_UNIT']['LEARNERS']) * 1.2 - this.y
+                            return data['BUSINESS_UNIT']['LEARNERS'][this.point.index]
                         },
                         style: {
                             fontFamily: 'Poppins',
@@ -766,7 +762,7 @@ jQuery.extend({
                 },
                  {
                     name: 'Participants',
-                    data: data['BUSINESS_UNIT']['LEARNERS'],
+                    data: generate_persent_array(data['BUSINESS_UNIT']['LEARNERS'], false),
                     dataLabels: {
                         enabled: false,
                     }
@@ -822,7 +818,7 @@ jQuery.extend({
                 yAxis: [{ // Primary yAxis
                     min: 0,
                     max: 100,
-                    width: 695,
+                    width: 703,
                     title: {
                         enabled: false
                     },
@@ -960,6 +956,7 @@ jQuery.extend({
                 },
         
                 yAxis: {
+                    max: 100,
                     title: {
                     enabled: false
                     },
@@ -967,7 +964,7 @@ jQuery.extend({
                     enabled: false
                     },
                     gridLineWidth: 0,
-                    width: 378
+                    width: 357
                   },
         
                 plotOptions: {
@@ -988,7 +985,7 @@ jQuery.extend({
                 {
                     name: 'Remainder',
                     showInLegend: false,
-                    data: generate_remnant2('CERTIFICATION_LEVEL'),
+                    data: generate_persent_array(data['CERTIFICATION_LEVEL']['LEARNERS'], true),
                     enableMouseTracking: false,
                     color: '#ffffff',
                     dataLabels: {
@@ -998,7 +995,7 @@ jQuery.extend({
                         y: labelpos,
                         color: '#4b4b4b',
                         formatter: function () {
-                            return (Math.max.apply(Math, data['CERTIFICATION_LEVEL']['LEARNERS'])*1.3) - this.y + " (" + Math.round(((Math.max.apply(Math, data['CERTIFICATION_LEVEL']['LEARNERS'])*1.3) - this.y)/data['CERTIFICATION_LEVEL']['LEARNERS'].reduce((a, b) => a + b, 0)*100) + "%)"
+                            return data['CERTIFICATION_LEVEL']['LEARNERS'][this.point.index] + " (" + (100 - this.y).toFixed(2) + "%)"
                         },
                         style: {
                             fontFamily: 'Poppins',
@@ -1011,7 +1008,7 @@ jQuery.extend({
         
                 },{
                     name: 'LEARNERS',
-                    data: data['CERTIFICATION_LEVEL']['LEARNERS'],
+                    data: generate_persent_array(data['CERTIFICATION_LEVEL']['LEARNERS'], false),
                     colors: colors,
                     colorByPoint: true,
         
@@ -1031,6 +1028,7 @@ jQuery.extend({
                     height: 850,
                     width: 967,
                     marginTop: 5,
+                    marginRight: 3,
                     spacingLeft: 0,
                     spacingBottom:0,
                     style: {
@@ -1338,6 +1336,7 @@ jQuery.extend({
                     type: 'bar',
                     height: 130,
                     marginTop: 20,
+                    marginRight: 2,
                     width: 750,
                     spacingLeft: 0,
                     backgroundColor: '#272726',
@@ -1364,9 +1363,9 @@ jQuery.extend({
                 },
                 xAxis: [{
                     plotBands: [{
-                    from: -0.5,
-                    to: 10,
-                    color: '#323232'
+                        from: -0.5,
+                        to: 10,
+                        color: '#323232'
                     }],
                     categories: ['PRE', 'POST'],
                     labels: {
@@ -1382,7 +1381,6 @@ jQuery.extend({
                     lineColor: 'transparent',
                     height: 55,
                     min: -0.4,
-        
                     startOnTick: false
                 },
                 {
@@ -1411,6 +1409,11 @@ jQuery.extend({
                 }
                 ],
                 yAxis: {
+                    // plotBands: [{
+                    //     from: -0.5,
+                    //     to: 10,
+                    //     color: '#323232'
+                    // }],
                     labels: {
                         style: {
                             fontFamily: 'Poppins',
@@ -1557,6 +1560,7 @@ jQuery.extend({
                     height: 605,
                     width: 1000,
                     marginTop: 0,
+                    marginRight: -11,
                     height: 535,
                     spacingTop: 0,
                     spacingLeft:0,
