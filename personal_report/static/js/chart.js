@@ -92,15 +92,15 @@ jQuery.extend({
             return series_data
         }
         
-        function generate_persent_array(array, is_remnant=false) {
+        function generate_persent_array(array, is_remnant=false, extra_gap=null) {
             const sum = array.reduce((accumulator, value) => {
                 return accumulator + value;
             }, 0);
             let result_array = [];
             if (is_remnant == true) {
-                result_array = array.map(function(x) { return 100 - (x * 100/sum)} );
+                result_array = array.map(function(x) { return 100 - (x * 100/sum) + extra_gap} );
             } else {
-                result_array = array.map(function(x) { return (x * 100/sum)} );
+                result_array = array.map(function(x) { return (x * 100/sum) } );
             }
             
             return result_array
@@ -956,7 +956,7 @@ jQuery.extend({
                 },
         
                 yAxis: {
-                    max: 100,
+                    max: 130,
                     title: {
                     enabled: false
                     },
@@ -985,7 +985,7 @@ jQuery.extend({
                 {
                     name: 'Remainder',
                     showInLegend: false,
-                    data: generate_persent_array(data['CERTIFICATION_LEVEL']['LEARNERS'], true),
+                    data: generate_persent_array(data['CERTIFICATION_LEVEL']['LEARNERS'], true, 60),
                     enableMouseTracking: false,
                     color: '#ffffff',
                     dataLabels: {
@@ -995,7 +995,7 @@ jQuery.extend({
                         y: labelpos,
                         color: '#4b4b4b',
                         formatter: function () {
-                            return data['CERTIFICATION_LEVEL']['LEARNERS'][this.point.index] + " (" + (100 - this.y).toFixed(2) + "%)"
+                            return data['CERTIFICATION_LEVEL']['LEARNERS'][this.point.index] + " (" + (100 - this.y + 60).toFixed(0) + "%)"
                         },
                         style: {
                             fontFamily: 'Poppins',
