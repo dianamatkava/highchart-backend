@@ -956,7 +956,7 @@ jQuery.extend({
                 },
         
                 yAxis: {
-                    max: 130,
+                    max: 120,
                     title: {
                     enabled: false
                     },
@@ -985,17 +985,21 @@ jQuery.extend({
                 {
                     name: 'Remainder',
                     showInLegend: false,
-                    data: generate_persent_array(data['CERTIFICATION_LEVEL']['LEARNERS'], true, 60),
+                    data: generate_persent_array(data['CERTIFICATION_LEVEL']['LEARNERS'], true, 40),
                     enableMouseTracking: false,
                     color: '#ffffff',
                     dataLabels: {
                         enabled: true,
+                        useHTML: true,
                         align: 'left',
                         verticalAlign: 'center',
                         y: labelpos,
                         color: '#4b4b4b',
                         formatter: function () {
-                            return data['CERTIFICATION_LEVEL']['LEARNERS'][this.point.index] + " (" + (100 - this.y + 60).toFixed(0) + "%)"
+                            console.log(this.y) 
+                            return `<div style='height: 27.5px; background-color: #ffffff; margin-top: -8px; line-height: 30px; padding-left: 5px'>
+                                        ${data['CERTIFICATION_LEVEL']['LEARNERS'][this.point.index] + " (" + (100 - this.y + 40).toFixed(0) + "%)"}
+                                    </div>`
                         },
                         style: {
                             fontFamily: 'Poppins',
@@ -1003,7 +1007,6 @@ jQuery.extend({
                             fontSize: '15px',
                             textOutline: 0
                         },
-                        //y:2
                     }
         
                 },{
