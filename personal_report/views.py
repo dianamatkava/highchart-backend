@@ -70,13 +70,12 @@ def generate_data(request, file=None):
         filename = request.session.get('filename')
 
         xls = pd.ExcelFile(os.path.join(settings.BASE_DIR, filepath, filename))
-        pages = [pd.read_excel(xls, f'pg{num}') for num in range(1, 6)]
+        pages = {f'pg{num}': pd.read_excel(xls, f'pg{num}') for num in range(1, 6)}
         
         table_title, keys_list = str(), list()
-        values_list, persentage =[[]]*3, int()
-        for page in pages:
+        values_list, persentage =[[]]*10, int()
+        for page_name, page, in pages.items():
             for row in page.iterrows():
-                
                 if not pd.isna(row[1][0]):   
                     # Define table title and set up new dict                 
                     if type(row[1][0])==str and row[1][0][0:3].startswith(('>>>', '<<<')):
@@ -92,23 +91,28 @@ def generate_data(request, file=None):
                             if len(row[1]) == 3 and type(row[1][2]) == str:
                                 values_list[1] = '_'.join(row[1][2].split()).upper()
                                 
-                    # Defines if wether we are looping throught headers on page 4    
+                    # Defines if wether we are looping throught headers on page 3/4    
                     elif len(row[1]) > 3 and type(row[1][3]) == str:
                         keys_list = '_'.join(str(row[1][0]).split()).upper()
-                        values_list[0] = '_'.join(row[1][2].split()).upper()
-                        values_list[1] = '_'.join(row[1][3].split()).upper()
-                        values_list[2] = '_'.join(row[1][4].split()).upper()
+                        for i, header in enumerate(row[1]):
+                            values_list[i] = '_'.join(header.split()).upper()
                             
+                    elif len(row[1]) > 3 and type(row[1][1]) == str and page_name=='pg3':
+                        print('\n', row[1][0], row[1][1], row[0])
+                        values_list[0] = '_'.join(row[1][0].split()).upper()
+                        values_list[1] = '_'.join(row[1][1].split()).upper()
+                        
                     # Looping through main table content (values). 
-                    elif len(row[1]) < 4: 
+                    elif len(row[1]) < 4 or page_name == 'pg3' and type(row[1][1]) in [int, float]:
                         data[table_title][row[1][0]] = round_score(row[1][1], 2, persentage)
                         data[table_title].setdefault(keys_list, []).append(row[1][0])
                         data[table_title].setdefault(values_list[0], []).append(round_score(row[1][1], 2, persentage))
-                        if len(row[1]) == 3 and not pd.isna(row[1][2]):
-                            data[table_title].setdefault(values_list[1], []).append(round_score(row[1][2], 2, persentage))
+                        if len(row[1]) > 2 and not pd.isna(row[1][2]):
+                            for i in range(len(row[1])-1):
+                                data[table_title].setdefault(values_list[i+1], []).append(round_score(row[1][i+1], 2, persentage))
                             
-                    # Looping through main table content (values) on page 4        
-                    else:
+                    # Looping through main table content (values) on page 4
+                    elif page_name == 'pg4':
                         data[table_title].setdefault(keys_list, []).append(row[1][0])
                         data[table_title].setdefault(row[1][1], {})
                         
