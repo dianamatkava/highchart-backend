@@ -39,25 +39,6 @@ jQuery.extend({
       }
       
       
-      function exportChartsSVG() {
-        for (let i = 0; i < 20; i++) {
-          setTimeout(function timer() {
-              Highcharts.charts[i].exportChart({
-                  type: 'image/svg+xml'
-              });
-          }, i * 7000);
-        }
-      }
-      
-      function exportChartsPNG() {
-        for (let i = 0; i < 20; i++) {
-          setTimeout(function timer() {
-              Highcharts.charts[i].exportChart();
-          }, i * 7000);
-        }
-      }
-
-      
       (function (H) {
         H.wrap(H.Legend.prototype, 'handleOverflow', function (p, h) {
                 return h;
@@ -91,6 +72,65 @@ jQuery.extend({
         
             return series_data
         }
+
+
+        function generateLineSeriesScoreByModule() {
+            res_data = {};
+            for (key of Object.keys(data['SCORE_BY_MODULE'])) {
+                console.warn(key)
+                if (typeof(data['SCORE_BY_MODULE'][key]) == 'object') {
+                    res_data[key] = data['SCORE_BY_MODULE'][key]; 
+                };
+            };
+
+            barKey = Object.keys(res_data)[1];
+            lineKeys = Object.keys(res_data).slice(2);
+            series = []
+            barSeries = {
+                name: 'Cohort Average',
+                stacking: 'normal',
+                data: res_data[barKey],
+                color: '#3b844e',
+                dataLabels: {
+                    enabled: true,
+                    align: 'right',
+                    x: 45,
+                    y: 2,
+                    style: {
+                        fontFamily: 'Poppins',
+                        color: '#4b4b4b',
+                        fontSize: '16px',
+                        fontWeight: 600,
+                        textOutline: 0
+                    },
+                    formatter: function () {
+                        return this.y + "%"
+                    }
+                },
+                legendIndex: 2
+            };
+            series.push(barSeries)
+            for (let key of lineKeys.slice(0, 5)) {
+                sum = res_data[key].reduce((a, b) => a + b, 0);
+                if (sum != 0) {
+                    lineSeries = {
+                        name: 'Global Average',
+                        type : 'spline',
+                        data: res_data[key],
+                        marker: {
+                            enabled: false
+                        },
+                        lineWidth: 3,
+                        crisp: false,
+                        legendIndex: 1
+                    };
+                    series.push(lineSeries)
+                };
+            }
+                
+            return series
+        };
+
         
         function generate_persent_array(array, is_remnant=false, extra_gap=null) {
             const sum = array.reduce((accumulator, value) => {
@@ -834,71 +874,29 @@ jQuery.extend({
                         pointPadding: 0.1
                     }
                 },
-                series: [{
-                    showInLegend: false,
-                    stacking: 'normal',
-                    data:  data['SCORE_BY_MODULE']['COHORT_AVERAGE'],
-        
-                    color: '#f6f6f6',
-                    enableMouseTracking: false
-                }, {
-                    name: 'Cohort Average',
-                    stacking: 'normal',
-                    data: data['SCORE_BY_MODULE']['COHORT_AVERAGE'],
-                    color: '#3b844e',
-                    dataLabels: {
-                        enabled: true,
-                        align: 'right',
-                        x: 45,
-                        y: 2,
-                        style: {
-                            fontFamily: 'Poppins',
-                            color: '#4b4b4b',
-                            fontSize: '16px',
-                            fontWeight: 600,
-                            textOutline: 0
-                        },
-                        formatter: function () {
-                            return this.y + "%"
-                        }
-                    },
-                    legendIndex: 2
-                }, {
-                    name: 'Global Average',
-                    type : 'spline',
-                    data: data['SCORE_BY_MODULE']['GLOBAL_AVERAGE'],
-                    marker: {
-                    enabled: false
-                    },
-                    color: '#ffbf00',
-                    lineWidth: 3,
-                    crisp: false,
-                    style: {
-        
-                    },
-                    legendIndex: 1
-                }]
+                colors: ['#ffbf00',  '#3984bc', '#cf6f4a', '#76d6ff', '#ff9300'],         
+                series: generateLineSeriesScoreByModule()
             });
         
         
-            if (data['CERTIFICATION_LEVEL']['LEVEL'].length == 4) {
+            if (data['CERTIFICATION_LEVEL']['MODULE'].length == 4) {
                 labelpos = -1
             }
             else {
                 labelpos = 3
             }
             colors = []
-            for (let x = 0; x < data['CERTIFICATION_LEVEL']['LEVEL'].length; x++) {
-                if (data['CERTIFICATION_LEVEL']['LEVEL'][x] == "None") {
+            for (let x = 0; x < data['CERTIFICATION_LEVEL']['MODULE'].length; x++) {
+                if (data['CERTIFICATION_LEVEL']['MODULE'][x] == "None") {
                     colors.push('#df182d')
                 }
-                else if (data['CERTIFICATION_LEVEL']['LEVEL'][x] == "Completion") {
+                else if (data['CERTIFICATION_LEVEL']['MODULE'][x] == "Completion") {
                     colors.push('#9d9d9c')
                 }
-                else if (data['CERTIFICATION_LEVEL']['LEVEL'][x] == "Merit") {
+                else if (data['CERTIFICATION_LEVEL']['MODULE'][x] == "Merit") {
                     colors.push('#3b844e')
                 }
-                else if (data['CERTIFICATION_LEVEL']['LEVEL'][x] == "Distinction") {
+                else if (data['CERTIFICATION_LEVEL']['MODULE'][x] == "Distinction") {
                     colors.push('#fab634')
                 }
             }
@@ -937,7 +935,7 @@ jQuery.extend({
                 },
         
                 xAxis: {
-                    categories: data['CERTIFICATION_LEVEL']['LEVEL'],
+                    categories: data['CERTIFICATION_LEVEL']['MODULE'],
                     offset: 120,
                     max: 3,
                     lineColor: 'transparent',
