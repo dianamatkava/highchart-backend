@@ -29,31 +29,31 @@ jQuery.extend({
 
     function enableDownload () {
         const params = new URLSearchParams(window.location.search);
-      
+
         const download = params.get("download");
-      
+
         if (download == 'true') {
             return true
         }
         return false
       }
-      
-      
+
+
       (function (H) {
         H.wrap(H.Legend.prototype, 'handleOverflow', function (p, h) {
                 return h;
             });
         }(Highcharts));
-      
-      
-      
+
+
+
         function generate_data_series(table_name) {
 
             const series_data = [];
             let max = new Array(0, 0);
             let index = 0;
             for (let key in data[table_name]) {
-        
+
                 if (!Array.isArray(data[table_name][key])) {
                     if (data[table_name][key]>max[0]) {
                         max[0] = data[table_name][key];
@@ -69,7 +69,7 @@ jQuery.extend({
             }
             series_data[max[1]]['sliced'] = true;
             series_data[max[1]]['selected'] = true;
-        
+
             return series_data
         }
 
@@ -79,7 +79,7 @@ jQuery.extend({
             for (key of Object.keys(data['SCORE_BY_MODULE'])) {
                 console.warn(key)
                 if (typeof(data['SCORE_BY_MODULE'][key]) == 'object') {
-                    res_data[key] = data['SCORE_BY_MODULE'][key]; 
+                    res_data[key] = data['SCORE_BY_MODULE'][key];
                 };
             };
 
@@ -127,11 +127,11 @@ jQuery.extend({
                     series.push(lineSeries)
                 };
             }
-                
+
             return series
         };
 
-        
+
         function generate_persent_array(array, is_remnant=false, extra_gap=null) {
             const sum = array.reduce((accumulator, value) => {
                 return accumulator + value;
@@ -142,11 +142,11 @@ jQuery.extend({
             } else {
                 result_array = array.map(function(x) { return (x * 100/sum) } );
             }
-            
+
             return result_array
         }
 
-        
+
         function generate_gap_subcategories(text, length=null) {let list = []; for (let i=1; i<=10; i++){list.push(text) } return list}
             if (data['EXPERTISE']['EXPERTISE'].length > 9) {
                 y = -240 + 30*(data['EXPERTISE']['EXPERTISE'].length - 1)-10
@@ -154,7 +154,7 @@ jQuery.extend({
             else {
                 y = -220 + 30*(data['EXPERTISE']['EXPERTISE'].length - 1)-10
             }
-        
+
             var colorCycle = ['#3b844e', '#3984bc', '#ddd64e', '#cf6f4a', '#a9d18e', '#76d6ff', '#ffd579', '#ff9300', '#9969c7', '#9b3745']
             var colors = []
             for (let x = 0; x < data['EXPERTISE']['EXPERTISE'].length; x++) {
@@ -165,7 +165,7 @@ jQuery.extend({
                     colors.push(colorCycle[x]);
                 }
             }
-        
+
             Highcharts.chart('container1', {
                 chart: {
                 type: 'pie',
@@ -201,7 +201,7 @@ jQuery.extend({
                 },
                 title: {
                 text: null
-        
+
                 },
                 colors: colors,
                 legend: {
@@ -225,7 +225,7 @@ jQuery.extend({
                         else {
                             return `<div style="display: flex; justify-content: space-between; width: 220px; border-bottom: 1px solid #4b4b4e;margin-top: -3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage)}%</span></div>`;
                         }
-        
+
                     },
                     useHTML: true,
                     itemStyle: {
@@ -234,7 +234,7 @@ jQuery.extend({
                         fontWeight: 'thin',
                         display: 'inline-block',
                         verticalAlign: 'middle'
-        
+
                     },
                     itemMarginTop: 9,
                     margin: -10,
@@ -243,7 +243,7 @@ jQuery.extend({
                     align: "top",
                     y: -255+data['EXPERTISE']['EXPERTISE'].length*27
                   //   {1: -228,  2: -201, 10: ?}
-        
+
                   },
                 tooltip: {
                 pointFormat: '{data.name} ({point.percentage:.1f}%)'
@@ -273,7 +273,7 @@ jQuery.extend({
                 colorByPoint: true,
                 data: generate_data_series('EXPERTISE')
                 }],
-        
+
             },
             );
             colorCycle = ['#3b844e', '#3984bc', '#ddd64e', '#cf6f4a', '#a9d18e', '#76d6ff', '#ffd579', '#ff9300', '#9969c7', '#9b3745']
@@ -286,8 +286,8 @@ jQuery.extend({
                     colors.push(colorCycle[x])
                 }
             }
-        
-        
+
+
             Highcharts.chart('container2', {
                   chart: {
                       type: 'pie',
@@ -351,11 +351,11 @@ jQuery.extend({
                       layout: "vertical",
                       y: -75+data['GENDER']['GENDER'].length*15
                   },
-        
+
                 tooltip: {
                     pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
                 },
-        
+
                 accessibility: {
                   point: {
                       valueSuffix: '%'
@@ -382,9 +382,9 @@ jQuery.extend({
                   data: generate_data_series('GENDER')
                 }]
             });
-        
-        
-        
+
+
+
             colorCycle = ['#3b844e', '#3984bc', '#ddd64e', '#cf6f4a', '#a9d18e', '#76d6ff', '#ffd579', '#ff9300', '#9969c7', '#9b3745']
             colors = []
             for (let x = 0; x < data['ROLE']['ROLE'].length; x++) {
@@ -395,7 +395,7 @@ jQuery.extend({
                     colors.push(colorCycle[x])
                 }
             }
-        
+
             Highcharts.chart('container3', {
               chart: {
                   type: 'pie',
@@ -408,22 +408,22 @@ jQuery.extend({
                   marginLeft: -258,
                   marginTop: 15,
               },
-        
+
               exporting: {
                   allowHTML: true,
                   enabled: enableDownload(),
                   scale: 8,
                   filename: "07 - Role"
               },
-        
+
               credits: {
                   enabled: false
               },
-        
+
               title: {
               text: null
               },
-        
+
               colors: colors,
               legend: {
                   title: {
@@ -447,7 +447,7 @@ jQuery.extend({
                       else {
                           return `<div style="display: flex; justify-content: space-between; width: 220px;border-bottom: 1px solid #4b4b4e;margin-top:-3.5px;"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
                       }
-        
+
                   },
                   useHTML: true,
                   itemStyle: {
@@ -464,11 +464,11 @@ jQuery.extend({
                   layout: "vertical",
                   y: -75+data['ROLE']['ROLE'].length*15
               },
-        
+
               tooltip: {
               pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
               },
-        
+
               accessibility: {
               point: {
                   valueSuffix: '%'
@@ -495,9 +495,9 @@ jQuery.extend({
                   data: generate_data_series('ROLE')
               }]
           });
-        
-        
-        
+
+
+
             colorCycle = ['#3b844e', '#3984bc', '#ddd64e', '#cf6f4a', '#a9d18e', '#76d6ff', '#ffd579', '#ff9300', '#9969c7', '#9b3745']
             colors = []
             for (let x = 0; x < data['WORK_EXPERIENCE']['WORK_EXPERIENCE'].length; x++) {
@@ -555,7 +555,7 @@ jQuery.extend({
                         else {
                             return `<div style="display: flex; justify-content: space-between; width: 220px;border-bottom: 1px solid #4b4b4e;margin-top:-3.5px"><span style="color:#a9a9a9;">${this.name}</span> <span style='float: right;'>${Math.round(this.percentage) + "%"}</span></div>`;
                         }
-        
+
                     },
                     useHTML: true,
                     itemStyle: {
@@ -586,7 +586,7 @@ jQuery.extend({
                  },
                 pie: {
                     allowPointSelect: true,
-        
+
                     cursor: 'pointer',
                     dataLabels: {
                     enabled: false
@@ -602,7 +602,7 @@ jQuery.extend({
                 data: generate_data_series('WORK_EXPERIENCE')
                 }]
             });
-        
+
             Highcharts.chart('container5', {
                 chart: {
                     type: 'bar',
@@ -615,7 +615,7 @@ jQuery.extend({
                     spacingBottom: 0,
                     spacingLeft:0,
                     spacingTop:0,
-        
+
                 },
                 exporting: {
                     allowHTML: true,
@@ -669,7 +669,7 @@ jQuery.extend({
                         stacking: 'normal',
                         borderWidth: 0,
                         maxPointWidth: 32
-        
+
                     },
                 },
                 series: [{
@@ -699,8 +699,8 @@ jQuery.extend({
                     }
                 }]
             });
-        
-        
+
+
             Highcharts.chart('container6', {
                 chart: {
                     type: 'bar',
@@ -713,7 +713,7 @@ jQuery.extend({
                     spacingBottom: 0,
                     spacingLeft: 0,
                     spacingTop:0
-        
+
                 },
                 exporting: {
                     allowHTML: true,
@@ -808,8 +808,8 @@ jQuery.extend({
                     }
                 }]
             });
-        
-        
+
+
             Highcharts.chart('container8', {
                 chart: {
                     type: 'column',
@@ -822,7 +822,7 @@ jQuery.extend({
                     marginTop: 0,
                     spacingBottom: 0,
                     spacingLeft: 0,
-        
+
                 },
                 exporting: {
                     allowHTML: true,
@@ -854,7 +854,7 @@ jQuery.extend({
                         }
                     }
                 },
-        
+
                 yAxis: [{ // Primary yAxis
                     min: 0,
                     max: 100,
@@ -874,11 +874,11 @@ jQuery.extend({
                         pointPadding: 0.1
                     }
                 },
-                colors: ['#ffbf00',  '#3984bc', '#cf6f4a', '#76d6ff', '#ff9300'],         
+                colors: ['#ffbf00',  '#3984bc', '#cf6f4a', '#76d6ff', '#ff9300'],
                 series: generateLineSeriesScoreByModule()
             });
-        
-        
+
+
             if (data['CERTIFICATION_LEVEL']['MODULE'].length == 4) {
                 labelpos = -1
             }
@@ -923,7 +923,7 @@ jQuery.extend({
                 credits: {
                     enabled: false
                 },
-        
+
                 title: {
                     text: null,
                     align: 'left',
@@ -933,7 +933,7 @@ jQuery.extend({
                         fontSize: '22px'
                     }
                 },
-        
+
                 xAxis: {
                     categories: data['CERTIFICATION_LEVEL']['MODULE'],
                     offset: 120,
@@ -952,7 +952,7 @@ jQuery.extend({
                         x: 0
                     },
                 },
-        
+
                 yAxis: {
                     max: 120,
                     title: {
@@ -964,7 +964,7 @@ jQuery.extend({
                     gridLineWidth: 0,
                     width: 357
                   },
-        
+
                 plotOptions: {
                     column: {
                         stacking: 'normal',
@@ -994,7 +994,7 @@ jQuery.extend({
                         y: labelpos,
                         color: '#4b4b4b',
                         formatter: function () {
-                            console.log(this.y) 
+                            console.log(this.y)
                             return `<div style='height: 27.5px; background-color: #ffffff; margin-top: -8px; line-height: 30px; padding-left: 5px'>
                                         ${data['CERTIFICATION_LEVEL']['LEARNERS'][this.point.index] + " (" + (100 - this.y + 40).toFixed(0) + "%)"}
                                     </div>`
@@ -1006,13 +1006,13 @@ jQuery.extend({
                             textOutline: 0
                         },
                     }
-        
+
                 },{
                     name: 'LEARNERS',
                     data: generate_persent_array(data['CERTIFICATION_LEVEL']['LEARNERS'], false),
                     colors: colors,
                     colorByPoint: true,
-        
+
                     dataLabels: {
                         enabled: false,
                     },
@@ -1020,8 +1020,8 @@ jQuery.extend({
                 ]
             },
         );
-        
-        
+
+
             //NEED TO CENTER CIRCLES ON THE LINES
             Highcharts.chart('container9', {
                 chart: {
@@ -1045,23 +1045,23 @@ jQuery.extend({
                 credits: {
                     enabled: false
                 },
-        
+
                 legend: {
                     enabled: false
                 },
-        
+
                 title: {
                     text: null,
                 },
-        
+
                 tooltip: {
                     formatter: function () {
                         return this.series.name + ': ' + '<b>' + this.y + '</b>'
                     },
                     shared: false
                 },
-        
-        
+
+
             xAxis: [{
                 categories: generate_gap_subcategories('PRE'),
                 labels: {
@@ -1186,11 +1186,11 @@ jQuery.extend({
                         }
                     }
                 }],
-        
+
                 yAxis: {
                     gridLineWidth: 0.8,
                     gridLineColor: '#e0e0e0',
-        
+
                     width: 600,
                     title: {
                     enabled: false
@@ -1201,7 +1201,7 @@ jQuery.extend({
                     min: 0,
                     max: 5
                 },
-        
+
                 plotOptions: {
                     series: {
                         states: {
@@ -1219,7 +1219,7 @@ jQuery.extend({
                         borderWidth: 0
                     },
                 },
-        
+
                 series: [
                     {
                     name: 'Pre-Course Gap to Goal',
@@ -1257,10 +1257,10 @@ jQuery.extend({
                             return '<img src="http://40.68.93.242/assets/images/charts/halfdot.svg" style="width: 12px">'
                             }
                         return '<img src="http://40.68.93.242/assets/images/charts/orangedot.svg" style="width: 12px">'
-        
+
                     }
                 }]
-        
+
                 },
                 {
                     name: 'Pre-Course Current Score',
@@ -1269,12 +1269,12 @@ jQuery.extend({
                     color: 'transparent',
                     enableMouseTracking: false,
                     showInLegend: false,
-        
+
                     dataLabels: {
                         enabled: false,
                     },
                     allowPointSelect: false
-        
+
             },
             {
                     name: 'Post-Course Gap to Goal',
@@ -1312,7 +1312,7 @@ jQuery.extend({
                                 return '<img src="http://40.68.93.242/assets/images/charts/halfdot.svg" style="width: 12px">'
                                 }
                             return '<img src="http://40.68.93.242/assets/images/charts/orangedot.svg" style="width: 12px">'
-        
+
                         }
                     }]
                 },
@@ -1327,11 +1327,11 @@ jQuery.extend({
                     enabled: false,
                 },
             },
-        
+
                 ]
             });
-        
-        
+
+
             Highcharts.chart('container17', {
                 chart: {
                     type: 'bar',
@@ -1376,7 +1376,7 @@ jQuery.extend({
                           color: '#b9b9b9',
                           fontSize: '11px',
                           fontWeight: 500
-        
+
                       }
                     },
                     lineColor: 'transparent',
@@ -1402,7 +1402,7 @@ jQuery.extend({
                     x: -10,
                     y: -7,
                     align: 'right'
-        
+
                 },
                 linkedTo: 0,
                 opposite: true,
@@ -1429,7 +1429,7 @@ jQuery.extend({
                     tickInterval: 1,
                     gridLineColor: '#878787',
                     gridLineWidth: 0.5,
-        
+
                     title: {
                         text: null
                     }
@@ -1483,7 +1483,7 @@ jQuery.extend({
                                 return '<img src="http://40.68.93.242/assets/images/charts/halfdot.svg" style="width: 11px; margin-top: -4">'
                                 }
                             return '<img src="http://40.68.93.242/assets/images/charts/orangedot.svg" style="width: 11px; margin-top: -4">'
-        
+
                         }
                     }]
                 }, {
@@ -1495,7 +1495,7 @@ jQuery.extend({
                 dataLabels: {
                     enabled: false,
                 },
-        
+
                 }, {
                     name: 'POST Gap-to-Goal',
                     data: [[1,data['GAP_TO_GOAL']['POST']['GAP'][data['GAP_TO_GOAL']['POST']['GAP'].length-1]]],
@@ -1546,9 +1546,9 @@ jQuery.extend({
                 },
                 }]
             });
-        
-        
-        
+
+
+
             Highcharts.seriesType('column2', 'column', {});
             // Module Rating and Relevance
             Highcharts.chart('container10', {
@@ -1576,11 +1576,11 @@ jQuery.extend({
                 credits: {
                     enabled: false
                 },
-        
+
                 title: {
                     text: null,
                 },
-        
+
                 xAxis: [
                 {
                     categories: data['MODULE_RATING_&_RELEVANCE']['MODULE'],
@@ -1629,10 +1629,10 @@ jQuery.extend({
                 },
                 lineColor: 'transparent'
                 }],
-        
+
                 yAxis: {
                     allowDecimals: false,
-        
+
                     max: 10,
                     gridLineWidth: 0,
                     title: {
@@ -1643,14 +1643,14 @@ jQuery.extend({
                         enabled: false,
                     },
                 },
-        
+
                 tooltip: {
                     formatter: function () {
                         return '<b>' + this.x + '</b><br/>' +
                             this.series.name + ': ' + this.y
                     }
                 },
-        
+
                 plotOptions: {
                     column: {
                         stacking: 'normal',
@@ -1674,7 +1674,7 @@ jQuery.extend({
                     color: '#e1e1e1',
                     enableMouseTracking: false,
                     xAxis: 1
-        
+
                 }, {
                     name: 'Module Rating',
                     showInLegend: true,
@@ -1695,7 +1695,7 @@ jQuery.extend({
                     color: '#e1e1e1',
                     enableMouseTracking: false,
                     xAxis: 1
-        
+
                 }, {
                     name: 'Module Relevance',
                     showInLegend: true,
@@ -1710,12 +1710,12 @@ jQuery.extend({
                 ]
             },
         );
-        
+
         //}
-        
-        
+
+
         Highcharts.chart('container11', {
-        
+
             chart: {
                 type: 'solidgauge',
                 height: 220,
@@ -1740,11 +1740,11 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null,
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -1755,14 +1755,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 100,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -1773,7 +1773,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 name: 'Completion Rate',
                 enableMouseTracking: false,
@@ -1799,10 +1799,10 @@ jQuery.extend({
                 }]
             }]
         });
-        
-        
+
+
         Highcharts.chart('container12', {
-        
+
             chart: {
                 type: 'solidgauge',
                 height: 220,
@@ -1827,11 +1827,11 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null,
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -1842,14 +1842,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 100,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -1860,7 +1860,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 enableMouseTracking: false,
                 name: 'Cohort Average Score',
@@ -1882,15 +1882,15 @@ jQuery.extend({
                             color: '#282828',
                             fontWeight: 600
                         }
-        
+
                     }
                 }]
             }]
         });
-        
-        
+
+
         Highcharts.chart('container13', {
-        
+
             chart: {
                 type: 'solidgauge',
                 height: 220,
@@ -1915,11 +1915,11 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null,
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -1930,14 +1930,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 100,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -1948,7 +1948,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 enableMouseTracking: false,
                 name: 'Certification Rate',
@@ -1971,15 +1971,15 @@ jQuery.extend({
                             color: '#282828',
                             fontWeight: 600
                         }
-        
+
                     }
                 }]
             }]
         });
-        
-        
+
+
         Highcharts.chart('container15', {
-        
+
             chart: {
                 type: 'solidgauge',
                 height: 220,
@@ -2005,11 +2005,11 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null,
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -2020,14 +2020,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 100,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -2038,7 +2038,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 enableMouseTracking: false,
                 name: 'Cohort Average Score',
@@ -2061,15 +2061,15 @@ jQuery.extend({
                             textOutline: 0,
                             fontWeight: 600
                         }
-        
+
                     }
                 }]
             }]
         });
-        
-        
+
+
         Highcharts.chart('container16', {
-        
+
             chart: {
                 type: 'solidgauge',
                 height: 220,
@@ -2095,11 +2095,11 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null,
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -2110,14 +2110,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 100,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -2128,7 +2128,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 enableMouseTracking: false,
                 name: 'Certification Rate',
@@ -2150,14 +2150,14 @@ jQuery.extend({
                             color: '#ffffff',
                             textOutline: 0
                         }
-        
+
                     }
                 }]
             }]
         });
-        
+
         Highcharts.chart('container18', {
-        
+
             chart: {
                 type: 'solidgauge',
                 height: 220,
@@ -2183,11 +2183,11 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -2198,14 +2198,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 100,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -2216,7 +2216,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 enableMouseTracking: false,
                 name: 'Recommendation Score',
@@ -2242,11 +2242,11 @@ jQuery.extend({
                 }]
             }]
         });
-        
-        
+
+
         Highcharts.chart('container19', {
             chart: {
-        
+
                 type: 'solidgauge',
                 style: {
                     fontFamily: 'Poppins'
@@ -2276,7 +2276,7 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null,
                 style: {
@@ -2285,7 +2285,7 @@ jQuery.extend({
                     color: '#ffffff'
                 }
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -2296,14 +2296,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 10,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -2314,7 +2314,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 enableMouseTracking: false,
                 name: 'Average Module Rating',
@@ -2341,10 +2341,10 @@ jQuery.extend({
                 }]
             }]
         });
-        
-        
+
+
         Highcharts.chart('container20', {
-        
+
             chart: {
                 type: 'solidgauge',
                 style: {
@@ -2375,7 +2375,7 @@ jQuery.extend({
             credits: {
                     enabled: false
                 },
-        
+
             title: {
                 text: null,
                 style: {
@@ -2384,7 +2384,7 @@ jQuery.extend({
                     color: '#ffffff'
                 }
             },
-        
+
             pane: {
                 startAngle: 0,
                 endAngle: 360,
@@ -2395,14 +2395,14 @@ jQuery.extend({
                     borderWidth: 0
                 },  ]
             },
-        
+
             yAxis: {
                 min: 0,
                 max: 10,
                 lineWidth: 0,
                 tickPositions: []
             },
-        
+
             plotOptions: {
                 solidgauge: {
                     dataLabels: {
@@ -2413,7 +2413,7 @@ jQuery.extend({
                     rounded: true
                 }
             },
-        
+
             series: [{
                 enableMouseTracking: false,
                 name: 'Average Module Relevance',
@@ -2440,12 +2440,12 @@ jQuery.extend({
                 }]
             }]
         });
-        
-        
-        
-        
+
+
+
+
         max = Math.max.apply(Math, data['RECOMMENDATION_SCORE_DISTRIBUTION']['SCORE'])*1.1
-        
+
         function generateColor () {
             let colorSequence = []
             for (const [index, value] of data['RECOMMENDATION_SCORE_DISTRIBUTION']['SCORE'].entries()) {
@@ -2457,8 +2457,8 @@ jQuery.extend({
                     colorSequence.push('#3b844e')
                 }
             }
-        
-        
+
+
             return colorSequence
         }
         //NEED TO FIX WIDTH AND HEIGHT --> CHANGES DEPENDING ON DATA
@@ -2506,10 +2506,10 @@ jQuery.extend({
               max: max,
               //tickInterval: 0.01,
               //minPadding: 0.2,
-        
-        
+
+
             },
-        
+
             xAxis: [{
                 categories: data['RECOMMENDATION_SCORE_DISTRIBUTION']['RECOMMENDATION_SCORE'],
                 lineWidth: 0,
@@ -2538,7 +2538,7 @@ jQuery.extend({
                         fontSize: '16px'
                         },
                     formatter: function() {
-        
+
                             if (this.pos > 6) {
                                 return `<span style="color: #3b844e">${this.value}</span>`
                         }
@@ -2546,18 +2546,18 @@ jQuery.extend({
                                 return `<span style="color: #9d9d9c">${this.value}</span>`
                         }
                     },
-        
+
                     align: 'right',
                     x: 55,
                     y:3,
                     zIndex: 100
                 },
                 zIndex: 200
-        
+
             }],
-        
+
             colors: generateColor(),
-        
+
             plotOptions: {
                 column: {
                   grouping: false
@@ -2575,21 +2575,21 @@ jQuery.extend({
                 color: '#323232',
                 enableMouseTracking: false
             },
-        
+
             {
                 name: 'LEARNERS',
                 data: data['RECOMMENDATION_SCORE_DISTRIBUTION']['SCORE'],
                 colorByPoint: true,
             }
             ]
-        
+
         });
-        
+
         }
-        
-      
-  
-  
+
+
+
+
 
 var data = $.getValues("/generate-data");
 
