@@ -2461,6 +2461,11 @@ jQuery.extend({
 
             return colorSequence
         }
+
+        const barWidth = (Math.max(...data['RECOMMENDATION_SCORE_DISTRIBUTION']['SCORE']) < 200) ? 580 : 620
+        const barY1 = 7 ? barWidth === 620 : 4
+        const barY2 = 7 ? barWidth === 580 : 5
+        console.log(barWidth, Math.max(...data['RECOMMENDATION_SCORE_DISTRIBUTION']['RECOMMENDATION_SCORE']))
         //NEED TO FIX WIDTH AND HEIGHT --> CHANGES DEPENDING ON DATA
         Highcharts.chart('container14', {
             chart: {
@@ -2469,7 +2474,7 @@ jQuery.extend({
                 backgroundColor: '#272726',
                 height: 295,
                 width: 590,
-                spacingRight: 60,
+                spacingRight: 35,
                 spacingLeft: -20,
                 style: {
                     fontFamily: 'Poppins'
@@ -2500,7 +2505,7 @@ jQuery.extend({
                   text: null
               },
               min: -1,
-              width: 570,
+              width: barWidth,
               //softMin: -2.1,
               //startOnTick: false,
               max: max,
@@ -2520,10 +2525,8 @@ jQuery.extend({
                         fontSize: '16px'
                     },
                     align: 'left',
-                    x: 25,
-                    //x: x,
-                    y:6,
-                    //offset: 1000
+                    x: 30,
+                    y:barY1,
                 }
             },
             {
@@ -2535,7 +2538,7 @@ jQuery.extend({
                     useHTML: true,
                     style:{
                         color: '#9d9d9c',
-                        fontSize: '16px'
+                        fontSize: '16px',
                         },
                     formatter: function() {
 
@@ -2548,12 +2551,9 @@ jQuery.extend({
                     },
 
                     align: 'right',
-                    x: 55,
-                    y:3,
-                    zIndex: 100
+                    x: 27,
+                    y: barY2,
                 },
-                zIndex: 200
-
             }],
 
             colors: generateColor(),
